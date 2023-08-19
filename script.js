@@ -107,28 +107,29 @@ const generateTeamName = () => {
 };
 
 // Toggle menu
-let menuOpen = true;
-const toggleMenu = () => {
-  if (menuOpen) {
-    $(".x-icon").removeClass("hide");
-    $(".bars-icon").addClass("hide");
-    $(".team-link").removeClass("hide");
-    menuOpen = false;
-  } else {
-    $(".x-icon").addClass("hide");
-    $(".bars-icon").removeClass("hide");
-    $(".team-link").addClass("hide");
-    menuOpen = true;
-  }
-};
+// let menuOpen = true;
+// const toggleMenu = () => {
+//   if (menuOpen) {
+//     $(".x-icon").removeClass("hide");
+//     $(".bars-icon").addClass("hide");
+//     $(".team-link").removeClass("hide");
+//     menuOpen = false;
+//   } else {
+//     $(".x-icon").addClass("hide");
+//     $(".bars-icon").removeClass("hide");
+//     $(".team-link").addClass("hide");
+//     menuOpen = true;
+//   }
+// };
 
 const showTeamModal = () => {
+  console.log("mode");
   $(".team-modal").removeClass("hide");
-  $(".add-team").addClass("hide");
+  $(".teams-container").addClass("hide");
 };
 const hideTeamModal = () => {
   $(".team-modal").addClass("hide");
-  $(".add-team").removeClass("hide");
+  // $("#add-team").removeClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
   displayTeams();
@@ -152,9 +153,7 @@ const displayTeams = () => {
       .addClass("team-button")
       .text(`${i + 1}:  ${existingTeams[i].name}`);
     $(".teams-index").append(newTimeCard);
-    // console.log(existingTeams[i]);
   }
-  // console.log(existingTeams);
 };
 
 const submitTeam = () => {
@@ -165,7 +164,6 @@ const submitTeam = () => {
     members: [],
   };
   const updatedTeams = [...existingTeams, newTeam];
-  console.log(updatedTeams);
   // Validate Team Name: display warning if empty name field
   if (newTeam.name) {
     localStorage.setItem("teams", JSON.stringify(updatedTeams));
@@ -184,10 +182,8 @@ $(() => {
 
   displayTeams();
 
-  // Menu Button
-  $(".menu").click(toggleMenu);
   // Team Buttons
-  $(".add-team").click(showTeamModal);
+  $("#add-team").click(showTeamModal);
   $(".cancel-team").click(hideTeamModal);
   $(".submit-team").click(submitTeam);
   $(".generate-team").click(generateTeamName);

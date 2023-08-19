@@ -95,14 +95,6 @@ body {
 .time-itself {
   /* font-size: 1.7em; */
 }
-.add-team {
-  padding: .3em;
-  background-color: var(--secondary-light);
-  width: fit-content;
-  border-radius: .4em;
-  border: 1px solid var(--secondary-dark);
-
-}
 .team-form {
   gap: 3em;
   width: 100%;
