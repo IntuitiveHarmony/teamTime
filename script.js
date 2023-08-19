@@ -13,6 +13,99 @@ const updateLocalTime = () => {
   $(".local-time").text(getTime);
 };
 
+// Generate Names
+const nouns = [
+  "Dogs",
+  "Cats",
+  "Elephants",
+  "Lions",
+  "Giraffes",
+  "Monkeys",
+  "Dolphins",
+  "Tigers",
+  "Penguins",
+  "Kangaroos",
+  "Koalas",
+  "Octopi",
+  "Zebras",
+  "Rhinos",
+  "Cheetahs",
+  "Foxes",
+  "Owls",
+  "Bears",
+  "Rabbits",
+  "Hippos",
+  "Peacocks",
+  "Sharks",
+  "Crocodiles",
+  "Butterflies",
+  "Seahorses",
+  "Platypi",
+  "Chimpanzees",
+  "Pandas",
+  "Horses",
+  "Llamas",
+  "Camels",
+  "Hedgehogs",
+  "Sloths",
+  "Raccoons",
+  "Flamingos",
+  "Parrots",
+  "Orangutans",
+  "Snails",
+  "Walruses",
+  "Alpacas",
+];
+const adjectives = [
+  "Zany",
+  "Whimsical",
+  "Goofy",
+  "Bizarre",
+  "Quirky",
+  "Wacky",
+  "Ludicrous",
+  "Absurd",
+  "Ridiculous",
+  "Hilarious",
+  "Nutty",
+  "Bonkers",
+  "Silly",
+  "Dippy",
+  "Loony",
+  "Offbeat",
+  "Far-out",
+  "Funky",
+  "Outlandish",
+  "Kooky",
+  "Peculiar",
+  "Flaky",
+  "Wackadoo",
+  "Unconventional",
+  "Daft",
+  "Nonsensical",
+  "Preposterous",
+  "Whacky",
+  "Eccentric",
+  "Cuckoo",
+  "Batty",
+  "Daffy",
+  "Absurd",
+  "Bunkers",
+  "Freaky",
+  "Kookaburra",
+  "Bananas",
+  "Cockamamie",
+  "Dippy",
+  "Screwball",
+];
+const generateTeamName = () => {
+  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+  const randomAdjective =
+    adjectives[Math.floor(Math.random() * adjectives.length)];
+
+  $("#team-name").val(`${randomAdjective} ${randomNoun}`);
+};
+
 // Toggle menu
 let menuOpen = true;
 const toggleMenu = () => {
@@ -97,4 +190,5 @@ $(() => {
   $(".add-team").click(showTeamModal);
   $(".cancel-team").click(hideTeamModal);
   $(".submit-team").click(submitTeam);
+  $(".generate-team").click(generateTeamName);
 });
