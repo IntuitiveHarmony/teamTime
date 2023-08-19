@@ -120,6 +120,7 @@ const hideTeamModal = () => {
 const showTeams = () => {
   hideTeamModal();
   $(".teams-container").removeClass("hide");
+  $(".team-show-container").addClass("hide");
 };
 
 // Hacking local storage for storing teams into empty array
@@ -146,6 +147,7 @@ const displayTeams = () => {
     $(".teams-index").append(newTimeCard);
     // Single out individual team's onClick
     $(`#team-${i}`).on("click", () => {
+      $(".team-show-container").removeClass("hide");
       // "Show route" for each team
       const team = $("<div>")
         .addClass("member-card")
@@ -167,7 +169,7 @@ const submitTeam = () => {
   // Validate Team Name: display warning if empty name field
   if (newTeam.name) {
     localStorage.setItem("teams", JSON.stringify(updatedTeams));
-    hideTeamModal();
+    showTeams();
   } else {
     $(".team-validate").css("display", "inline-block");
   }
