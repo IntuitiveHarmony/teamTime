@@ -13,6 +13,21 @@ const updateLocalTime = () => {
   $(".local-time").text(getTime);
 };
 
+// Toggle menu
+let menuOpen = true;
+const toggleMenu = () => {
+  if (menuOpen) {
+    $(".x-icon").removeClass("hide");
+    $(".bars-icon").addClass("hide");
+    menuOpen = false;
+  } else {
+    $(".x-icon").addClass("hide");
+    $(".bars-icon").removeClass("hide");
+    menuOpen = true;
+  }
+  console.log(menuOpen);
+};
+
 const showTeamModal = () => {
   $(".team-modal").css("display", "block");
   $(".add-team").css("display", "none");
@@ -43,9 +58,9 @@ const displayTeams = () => {
       .addClass("team-button")
       .text(`${i + 1}:  ${existingTeams[i].name}`);
     $(".teams-index").append(newTimeCard);
-    console.log(existingTeams[i]);
+    // console.log(existingTeams[i]);
   }
-  console.log(existingTeams);
+  // console.log(existingTeams);
 };
 
 const submitTeam = () => {
@@ -75,6 +90,8 @@ $(() => {
 
   displayTeams();
 
+  // Menu Button
+  $(".menu").click(toggleMenu);
   // Team Buttons
   $(".add-team").click(showTeamModal);
   $(".cancel-team").click(hideTeamModal);

@@ -113,8 +113,14 @@ body {
   display: none;
 }
 .nav-menu {
+  display: flex;
+  justify-content: center;
+  width: 1em;
   padding: .3em;
   color: var(--light-accent);
   border: 1px solid var(--light-accent);
   border-radius: .4em;
+}
+.hide{
+  display: none;
 }
