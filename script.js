@@ -106,24 +106,7 @@ const generateTeamName = () => {
   $("#team-name").val(`${randomAdjective} ${randomNoun}`);
 };
 
-// Toggle menu
-// let menuOpen = true;
-// const toggleMenu = () => {
-//   if (menuOpen) {
-//     $(".x-icon").removeClass("hide");
-//     $(".bars-icon").addClass("hide");
-//     $(".team-link").removeClass("hide");
-//     menuOpen = false;
-//   } else {
-//     $(".x-icon").addClass("hide");
-//     $(".bars-icon").removeClass("hide");
-//     $(".team-link").addClass("hide");
-//     menuOpen = true;
-//   }
-// };
-
 const showTeamModal = () => {
-  console.log("mode");
   $(".team-modal").removeClass("hide");
   $(".teams-container").addClass("hide");
 };
@@ -133,6 +116,11 @@ const hideTeamModal = () => {
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
   displayTeams();
+};
+
+const showTeams = () => {
+  hideTeamModal();
+  $(".teams-container").removeClass("hide");
 };
 
 // Hacking local storage for storing teams into empty array
@@ -184,6 +172,7 @@ $(() => {
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
+  $("#show-teams").click(showTeams);
   $(".cancel-team").click(hideTeamModal);
   $(".submit-team").click(submitTeam);
   $(".generate-team").click(generateTeamName);
