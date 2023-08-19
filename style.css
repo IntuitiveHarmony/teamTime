@@ -100,7 +100,7 @@ body {
   width: 100%;
 }
 .team-validate {
-  color: var(--warning-color);
+  color: var(--secondary-light);
   display: none;
 }
 .nav-menu {

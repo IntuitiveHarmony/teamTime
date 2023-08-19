@@ -112,7 +112,6 @@ const showTeamModal = () => {
 };
 const hideTeamModal = () => {
   $(".team-modal").addClass("hide");
-  // $("#add-team").removeClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
   displayTeams();
@@ -133,14 +132,27 @@ const initLocalStorage = () => {
 };
 
 const displayTeams = () => {
+  // make sure teams don't stack
   $(".teams-index").empty();
+
   const teamsJSON = localStorage.getItem("teams");
   const existingTeams = JSON.parse(teamsJSON);
+
   for (let i = 0; i < existingTeams.length; i++) {
     const newTimeCard = $("<li>")
       .addClass("team-button")
+      .attr("id", `team-${i}`)
       .text(`${i + 1}:  ${existingTeams[i].name}`);
     $(".teams-index").append(newTimeCard);
+    // Single out individual team's onClick
+    $(`#team-${i}`).click(() => {
+      // "Show route" for each team
+      const team = $("<div>")
+        .addClass("member-card")
+        .text(existingTeams[i].name);
+      $(".teams-container").addClass("hide");
+      $(".team-show-container").empty().append(team);
+    });
   }
 };
 
