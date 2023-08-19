@@ -50,13 +50,14 @@ table {
 
 /* MY STUFF */
 :root {
-  --primary-color: #6D8491;
-  --secondary-color: #3F334D;
-  --secondary-fade: #615272;
-  --accent-color: #C8D96F;
+  --dark-color: #1f2041;
+  --dark-accent: #19647e;
+  --light-accent: #119da4;
+  --secondary-dark: #4b3f72;
+  --secondary-light: #ffc857;
 }
 body {
-  background-color: var(--primary-color);
+  background-color: var(--dark-accent);
 }
 .navbar {
   display: flex;
@@ -64,20 +65,39 @@ body {
   width: 100vw;
   height: 2.5em;
   font-size: 1.5em;
-  background-color: var(--secondary-color);
+  background-color: var(--dark-color);
   padding-left: 1em;
 }
 .nav-title {
-  color: var(--accent-color);
+  color: var(--light-accent);
+}
+.clock-container {
+  padding: .3em;
 }
 .time-title {
-
 }
 .time-card {
-  border: 1px solid var(--accent-color);
-  margin: .4em;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--light-accent);
+  border: 1px solid var(--secondary-dark);
   padding: .7em;
+  font-size: 1.2em;
 }
 .local {
-  background-color: var(--secondary-fade);
+  background-color: var(--secondary-light);
+}
+.time-itself {
+  /* font-size: 1.7em; */
+}
+.add-member {
+  padding: .3em;
+  background-color: var(--secondary-light);
+  width: fit-content;
+  border-radius: .4em;
+  border: 1px solid var(--secondary-dark);
+
+}
+.team-modal {
+  display: none;
 }
