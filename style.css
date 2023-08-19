@@ -68,12 +68,13 @@ body {
   height: fit-content;
   font-size: 1.5em;
   background-color: var(--dark-color);
-  padding-left: .7em;
+  color: var(--light-accent);
+  padding-top: .7em;
   padding-right: .7em;
   padding-bottom: .5em;
+  padding-left: .7em;
 }
 .nav-title {
-  color: var(--light-accent);
 }
 .clock-container {
   padding: .3em;
@@ -110,6 +111,10 @@ body {
   color: var(--warning-color);
   display: none;
 }
+.nav-menu {
+  display: flex;
+  gap: .7em;
+}
 .icon-box {
   cursor: pointer;
   display: flex;
@@ -119,6 +124,9 @@ body {
   color: var(--light-accent);
   border: 1px solid var(--light-accent);
   border-radius: .4em;
+}
+.icon-label {
+  font-size: .5em;
 }
 .hide{
   display: none;
