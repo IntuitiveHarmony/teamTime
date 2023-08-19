@@ -1,1 +1,3 @@
-console.log("sup");
+if ($) {
+  console.log("sweet");
+}
