@@ -145,7 +145,7 @@ const displayTeams = () => {
       .text(`${i + 1}:  ${existingTeams[i].name}`);
     $(".teams-index").append(newTimeCard);
     // Single out individual team's onClick
-    $(`#team-${i}`).click(() => {
+    $(`#team-${i}`).on("click", () => {
       // "Show route" for each team
       const team = $("<div>")
         .addClass("member-card")
