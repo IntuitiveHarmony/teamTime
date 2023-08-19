@@ -13,20 +13,29 @@ const updateLocalTime = () => {
   $(".local-time").text(getTime);
 };
 
-const addTeam = () => {
+const showTeamModal = () => {
   $(".team-modal").css("display", "block");
   $(".add-team").css("display", "none");
-  const team = {
-    name: "",
-    members: [],
-  };
-  localStorage.setItem(`Teams: ${team}: `, JSON.stringify(team));
-  // console.log(team);
+};
+const hideTeamModal = () => {
+  $(".team-modal").css("display", "none");
+  $(".add-team").css("display", "block");
+  $(".team-validate").css("display", "none");
+  $("#team-name").val("");
 };
 
-const cancelTeam = () => {
-  $(".team-modal").css("display", "none");
-  $(".add-team").css("display", "initial");
+const submitTeam = () => {
+  const team = {
+    name: $("#team-name").val(),
+    members: [],
+  };
+  if (team.name) {
+    localStorage.setItem(`Teams: ${team}: `, JSON.stringify(team));
+    console.log(team);
+    hideTeamModal();
+  } else {
+    $(".team-validate").css("display", "inline-block");
+  }
 };
 
 $(() => {
@@ -36,6 +45,7 @@ $(() => {
   setInterval(updateLocalTime, 1000);
 
   // Team Buttons
-  $(".add-team").click(addTeam);
-  $(".cancel-team").click(cancelTeam);
+  $(".add-team").click(showTeamModal);
+  $(".cancel-team").click(hideTeamModal);
+  $(".submit-team").click(submitTeam);
 });

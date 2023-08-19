@@ -55,6 +55,7 @@ table {
   --light-accent: #119da4;
   --secondary-dark: #4b3f72;
   --secondary-light: #ffc857;
+  --warning-color: magenta;
 }
 body {
   background-color: var(--dark-accent);
@@ -104,4 +105,8 @@ body {
 .team-form {
   gap: 3em;
   width: 100%;
+}
+.team-validate {
+  color: var(--warning-color);
+  display: none;
 }
