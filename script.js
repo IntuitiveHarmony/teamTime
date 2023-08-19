@@ -24,14 +24,27 @@ const hideTeamModal = () => {
   $("#team-name").val("");
 };
 
+// Hacking local storage for storing teams into empty array
+const initLocalStorage = () => {
+  const existingTeams = localStorage.getItem("teams");
+  if (!existingTeams) {
+    const emptyArray = [];
+    localStorage.setItem("teams", JSON.stringify(emptyArray));
+  }
+};
+
 const submitTeam = () => {
-  const team = {
+  const teamsJSON = localStorage.getItem("teams");
+  const existingTeams = JSON.parse(teamsJSON);
+  const newTeam = {
     name: $("#team-name").val(),
     members: [],
   };
-  if (team.name) {
-    localStorage.setItem(`Teams: ${team}: `, JSON.stringify(team));
-    console.log(team);
+  const updatedTeams = [...existingTeams, newTeam];
+  console.log(updatedTeams);
+  // Validate Team Name: display warning if empty name field
+  if (newTeam.name) {
+    localStorage.setItem("teams", JSON.stringify(updatedTeams));
     hideTeamModal();
   } else {
     $(".team-validate").css("display", "inline-block");
@@ -39,6 +52,7 @@ const submitTeam = () => {
 };
 
 $(() => {
+  initLocalStorage();
   // Update the time immediately when the page loads
   updateLocalTime();
   // Update the time every second
