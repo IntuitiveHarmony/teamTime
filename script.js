@@ -14,23 +14,19 @@ const updateLocalTime = () => {
 };
 
 const addTeam = () => {
+  $(".team-modal").css("display", "block");
+  $(".add-team").css("display", "none");
   const team = {
-    name: "Test Team",
-    members: [
-      {
-        name: "Jason",
-        location: "Denver",
-        timeZone: "",
-      },
-      {
-        name: "Harley",
-        location: "Dream Land",
-        timeZone: "",
-      },
-    ],
+    name: "",
+    members: [],
   };
-  localStorage.setItem(`Team: ${team}: `, JSON.stringify(team));
-  console.log(team);
+  localStorage.setItem(`Teams: ${team}: `, JSON.stringify(team));
+  // console.log(team);
+};
+
+const cancelTeam = () => {
+  $(".team-modal").css("display", "none");
+  $(".add-team").css("display", "initial");
 };
 
 $(() => {
@@ -39,6 +35,7 @@ $(() => {
   // Update the time every second
   setInterval(updateLocalTime, 1000);
 
-  // Add Member Button
-  $(".add-member").click(addTeam);
+  // Team Buttons
+  $(".add-team").click(addTeam);
+  $(".cancel-team").click(cancelTeam);
 });

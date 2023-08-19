@@ -90,7 +90,7 @@ body {
 .time-itself {
   /* font-size: 1.7em; */
 }
-.add-member {
+.add-team {
   padding: .3em;
   background-color: var(--secondary-light);
   width: fit-content;
@@ -100,4 +100,8 @@ body {
 }
 .team-modal {
   display: none;
+}
+.team-form {
+  gap: 3em;
+  width: 100%;
 }
