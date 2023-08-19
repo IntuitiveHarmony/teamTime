@@ -52,6 +52,7 @@ table {
 :root {
   --primary-color: #6D8491;
   --secondary-color: #3F334D;
+  --secondary-fade: #615272;
   --accent-color: #C8D96F;
 }
 body {
@@ -72,6 +73,11 @@ body {
 .time-title {
 
 }
-.current {
-  
+.time-card {
+  border: 1px solid var(--accent-color);
+  margin: .4em;
+  padding: .7em;
+}
+.local {
+  background-color: var(--secondary-fade);
 }
