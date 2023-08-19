@@ -19,23 +19,24 @@ const toggleMenu = () => {
   if (menuOpen) {
     $(".x-icon").removeClass("hide");
     $(".bars-icon").addClass("hide");
+    $(".team-link").removeClass("hide");
     menuOpen = false;
   } else {
     $(".x-icon").addClass("hide");
     $(".bars-icon").removeClass("hide");
+    $(".team-link").addClass("hide");
     menuOpen = true;
   }
-  console.log(menuOpen);
 };
 
 const showTeamModal = () => {
-  $(".team-modal").css("display", "block");
-  $(".add-team").css("display", "none");
+  $(".team-modal").removeClass("hide");
+  $(".add-team").addClass("hide");
 };
 const hideTeamModal = () => {
-  $(".team-modal").css("display", "none");
-  $(".add-team").css("display", "block");
-  $(".team-validate").css("display", "none");
+  $(".team-modal").addClass("hide");
+  $(".add-team").removeClass("hide");
+  $(".team-validate").addClass("hide");
   $("#team-name").val("");
   displayTeams();
 };

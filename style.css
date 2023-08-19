@@ -65,11 +65,12 @@ body {
   justify-content: space-between;
   align-items: center;
   max-width: 100vw;
-  height: 2.5em;
+  height: fit-content;
   font-size: 1.5em;
   background-color: var(--dark-color);
   padding-left: .7em;
   padding-right: .7em;
+  padding-bottom: .5em;
 }
 .nav-title {
   color: var(--light-accent);
@@ -101,9 +102,6 @@ body {
   border: 1px solid var(--secondary-dark);
 
 }
-.team-modal {
-  display: none;
-}
 .team-form {
   gap: 3em;
   width: 100%;
@@ -112,7 +110,8 @@ body {
   color: var(--warning-color);
   display: none;
 }
-.nav-menu {
+.icon-box {
+  cursor: pointer;
   display: flex;
   justify-content: center;
   width: 1em;
