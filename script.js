@@ -22,6 +22,7 @@ const hideTeamModal = () => {
   $(".add-team").css("display", "block");
   $(".team-validate").css("display", "none");
   $("#team-name").val("");
+  displayTeams();
 };
 
 // Hacking local storage for storing teams into empty array
@@ -31,6 +32,20 @@ const initLocalStorage = () => {
     const emptyArray = [];
     localStorage.setItem("teams", JSON.stringify(emptyArray));
   }
+};
+
+const displayTeams = () => {
+  $(".teams-index").empty();
+  const teamsJSON = localStorage.getItem("teams");
+  const existingTeams = JSON.parse(teamsJSON);
+  for (let i = 0; i < existingTeams.length; i++) {
+    const newTimeCard = $("<li>")
+      .addClass("team-button")
+      .text(`${i + 1}:  ${existingTeams[i].name}`);
+    $(".teams-index").append(newTimeCard);
+    console.log(existingTeams[i]);
+  }
+  console.log(existingTeams);
 };
 
 const submitTeam = () => {
@@ -57,6 +72,8 @@ $(() => {
   updateLocalTime();
   // Update the time every second
   setInterval(updateLocalTime, 1000);
+
+  displayTeams();
 
   // Team Buttons
   $(".add-team").click(showTeamModal);

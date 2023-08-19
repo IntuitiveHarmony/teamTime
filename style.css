@@ -62,12 +62,14 @@ body {
 }
 .navbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 100vw;
+  max-width: 100vw;
   height: 2.5em;
   font-size: 1.5em;
   background-color: var(--dark-color);
-  padding-left: 1em;
+  padding-left: .7em;
+  padding-right: .7em;
 }
 .nav-title {
   color: var(--light-accent);
@@ -109,4 +111,10 @@ body {
 .team-validate {
   color: var(--warning-color);
   display: none;
+}
+.nav-menu {
+  padding: .3em;
+  color: var(--light-accent);
+  border: 1px solid var(--light-accent);
+  border-radius: .4em;
 }
