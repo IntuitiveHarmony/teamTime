@@ -175,7 +175,8 @@ const displayTeams = () => {
       console.log(teamMembers);
       $(".team-show-container").removeClass("hide");
       $(".teams-container").addClass("hide");
-      $(".team-header").text(teamName);
+      // Pass index to the show page
+      $(".team-header").text(teamName).attr("index", i);
     });
   }
 };
@@ -201,11 +202,37 @@ const submitTeam = () => {
 // Member Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const hideMemberModal = () => {
+  $("#add-member").removeClass("hide");
   $(".member-modal").addClass("hide");
 };
 
 const showMemberModal = () => {
+  $("#add-member").addClass("hide");
   $(".member-modal").removeClass("hide");
+};
+
+const cancelMember = () => {
+  hideMemberModal();
+  $("#member-name").val("");
+  $("#member-location").val("");
+};
+
+const submitMember = () => {
+  const index = $(".team-header").attr("index");
+  console.log(index);
+  const teamsJSON = localStorage.getItem("teams");
+  const existingTeams = JSON.parse(teamsJSON);
+  console.log(existingTeams[index]);
+  const existingMembers = existingTeams[index].members;
+
+  const newMember = {
+    name: $("#member-name").val(),
+    location: $("#member-location").val(),
+    timeZone: $("#timezone-offset").val(),
+  };
+  console.log(existingMembers);
+  console.log(newMember);
+  hideMemberModal();
 };
 
 $(() => {
@@ -226,4 +253,6 @@ $(() => {
 
   // Member Buttons
   $("#add-member").click(showMemberModal);
+  $("#cancel-member").click(cancelMember);
+  $("#submit-member").click(submitMember);
 });
