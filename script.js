@@ -18,6 +18,8 @@ let request = indexedDB.open(DB_NAME, DB_VERSION);
 request.onsuccess = (event) => {
   // console.log("IndexDB opened Successfully");
   db = event.target.result;
+  // once connected display the teams
+  displayTeams();
 };
 
 // This event is triggered when the database version changes or is created
@@ -178,48 +180,49 @@ const hideTeams = () => {
   $(".team-show-container").addClass("hide");
 };
 
-// Hacking local storage for storing teams into empty array
-const initLocalStorage = () => {
-  const existingTeams = localStorage.getItem("teams");
-  if (!existingTeams) {
-    const emptyArray = [];
-    localStorage.setItem("teams", JSON.stringify(emptyArray));
-  }
-};
-
 const displayTeams = () => {
+  console.log("display teams");
+  const transaction = db.transaction([DB_STORE_NAME], "readonly");
+  const store = transaction.objectStore(DB_STORE_NAME);
+  const countRequest = store.count();
+
+  let teamCount;
+
+  countRequest.onsuccess = () => {
+    teamCount = countRequest.result;
+    console.log(teamCount);
+  };
+
   // make sure teams don't stack
-  $(".teams-index").empty();
-
-  const teamsJSON = localStorage.getItem("teams");
-  const existingTeams = JSON.parse(teamsJSON);
-  // Loop that lays down the team buttons
-  for (let i = 0; i < existingTeams.length; i++) {
-    const teamName = existingTeams[i].name;
-    const teamMembers = existingTeams[i].members;
-
-    const newTimeCard = $("<li>")
-      .addClass("team-button")
-      .attr("id", `team-${i}`);
-    const nameContainer = $("<div>")
-      .addClass("team-name-container")
-      .text(`${teamName}`)
-      .appendTo(newTimeCard);
-    const memberContainer = $("<div>")
-      .addClass("team-member-container")
-      .text(`Members: ${existingTeams[i].members.length}`)
-      .appendTo(newTimeCard);
-    $(".teams-index").append(newTimeCard);
-    // Single out individual team's onClick
-    // "Show View" for each team
-    $(`#team-${i}`).on("click", () => {
-      console.log(teamMembers);
-      $(".team-show-container").removeClass("hide");
-      $(".teams-container").addClass("hide");
-      // Pass index to the show page
-      $(".team-header").text(teamName).attr("index", i);
-    });
-  }
+  // $(".teams-index").empty();
+  // const teamsJSON = localStorage.getItem("teams");
+  // const existingTeams = JSON.parse(teamsJSON);
+  // // Loop that lays down the team buttons
+  // for (let i = 0; i < existingTeams.length; i++) {
+  //   const teamName = existingTeams[i].name;
+  //   const teamMembers = existingTeams[i].members;
+  //   const newTimeCard = $("<li>")
+  //     .addClass("team-button")
+  //     .attr("id", `team-${i}`);
+  //   const nameContainer = $("<div>")
+  //     .addClass("team-name-container")
+  //     .text(`${teamName}`)
+  //     .appendTo(newTimeCard);
+  //   const memberContainer = $("<div>")
+  //     .addClass("team-member-container")
+  //     .text(`Members: ${existingTeams[i].members.length}`)
+  //     .appendTo(newTimeCard);
+  //   $(".teams-index").append(newTimeCard);
+  //   // Single out individual team's onClick
+  //   // "Show View" for each team
+  //   $(`#team-${i}`).on("click", () => {
+  //     console.log(teamMembers);
+  //     $(".team-show-container").removeClass("hide");
+  //     $(".teams-container").addClass("hide");
+  //     // Pass index to the show page
+  //     $(".team-header").text(teamName).attr("index", i);
+  //   });
+  // }
 };
 
 const submitTeam = () => {
@@ -238,6 +241,7 @@ const submitTeam = () => {
     //  Add the new team to the IndexedDB object store
     const addRequest = store.add(newTeam);
     addRequest.onsuccess = () => {
+      hideTeamModal();
       displayTeams();
     };
   } else {
@@ -285,13 +289,10 @@ const submitMember = () => {
 };
 
 $(() => {
-  initLocalStorage();
   // Update the time immediately when the page loads
   updateLocalTime();
   // Update the time every second
   setInterval(updateLocalTime, 1000);
-
-  displayTeams();
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
