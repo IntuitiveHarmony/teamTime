@@ -194,7 +194,7 @@ const submitTeam = () => {
 // Member Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const showMemberModal = () => {
-  console.log("memeber modal");
+  $(".member-modal").removeClass("hide");
 };
 
 $(() => {
