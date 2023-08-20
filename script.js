@@ -1,4 +1,45 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Database Functions
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if (!("indexedDB" in window)) {
+  console.log("This browser doesn't support IndexedDB");
+}
+
+// Database Variables
+const DB_NAME = "teamsData";
+const DB_VERSION = 1;
+const DB_STORE_NAME = "teams";
+
+let db;
+
+// Request to open new IndexDB instance
+let request = indexedDB.open(DB_NAME, DB_VERSION);
+
+request.onsuccess = (event) => {
+  // console.log("IndexDB opened Successfully");
+  db = event.target.result;
+};
+
+// This event is triggered when the database version changes or is created
+// Index DB's schema
+request.onupgradeneeded = (event) => {
+  console.log("Running Upgrade needed");
+  db = event.target.result;
+  // Create an object store called "contacts" with auto-incrementing keys
+  const storeOS = db.createObjectStore(DB_STORE_NAME, {
+    keyPath: "id",
+    autoIncrement: true,
+  });
+  // Create an index called "name" for searching contacts by name
+  storeOS.createIndex("name", "name", { unique: true });
+};
+
+// Event handler for database connection errors
+request.onerror = (event) => {
+  console.error("Database error:", event.target.error);
+};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const getTime = () => {
@@ -182,17 +223,23 @@ const displayTeams = () => {
 };
 
 const submitTeam = () => {
-  const teamsJSON = localStorage.getItem("teams");
-  const existingTeams = JSON.parse(teamsJSON);
+  // Use the db object directly to interact with IndexedDB
+  const transaction = db.transaction([DB_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_STORE_NAME);
+
+  // Grab team name from the form
   const newTeam = {
     name: $("#team-name").val(),
     members: [],
   };
-  const updatedTeams = [...existingTeams, newTeam];
+
   // Validate Team Name: display warning if empty name field
   if (newTeam.name) {
-    localStorage.setItem("teams", JSON.stringify(updatedTeams));
-    showTeams();
+    //  Add the new team to the IndexedDB object store
+    const addRequest = store.add(newTeam);
+    addRequest.onsuccess = () => {
+      displayTeams();
+    };
   } else {
     $(".team-validate").css("display", "inline-block");
   }
