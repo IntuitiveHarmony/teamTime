@@ -142,8 +142,15 @@ const displayTeams = () => {
   for (let i = 0; i < existingTeams.length; i++) {
     const newTimeCard = $("<li>")
       .addClass("team-button")
-      .attr("id", `team-${i}`)
-      .text(`${i + 1}:  ${existingTeams[i].name}`);
+      .attr("id", `team-${i}`);
+    const nameContainer = $("<div>")
+      .addClass("team-name-container")
+      .text(`${existingTeams[i].name}`)
+      .appendTo(newTimeCard);
+    const memberContainer = $("<div>")
+      .addClass("team-member-container")
+      .text(`Members: ${existingTeams[i].members.length}`)
+      .appendTo(newTimeCard);
     $(".teams-index").append(newTimeCard);
     // Single out individual team's onClick
     $(`#team-${i}`).on("click", () => {

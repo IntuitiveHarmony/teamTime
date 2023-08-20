@@ -120,6 +120,23 @@ body {
 .icon-label {
   font-size: .5em;
 }
+.teams-container {
+  width: 100%;
+  display: flex;
+  gap: .2em;
+}
+.teams-index {
+  display: flex;
+  flex-direction: column;
+  gap: .2em;
+  
+}
+.team-button {
+  display: flex;
+  justify-content: space-between;
+  padding: .2em;
+  border: 1px solid var(--dark-color);
+}
 .hide{
   display: none;
 }
