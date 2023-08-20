@@ -218,8 +218,9 @@ const cancelMember = () => {
 };
 
 const submitMember = () => {
+  // Grab the team index
   const index = $(".team-header").attr("index");
-  console.log(index);
+
   const teamsJSON = localStorage.getItem("teams");
   const existingTeams = JSON.parse(teamsJSON);
   console.log(existingTeams[index]);
@@ -230,6 +231,7 @@ const submitMember = () => {
     location: $("#member-location").val(),
     timeZone: $("#timezone-offset").val(),
   };
+
   console.log(existingMembers);
   console.log(newMember);
   hideMemberModal();
