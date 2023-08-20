@@ -114,6 +114,8 @@ const generateTeamName = () => {
 };
 
 const showTeamModal = () => {
+  hideMemberModal();
+  hideTeams();
   $(".team-modal").removeClass("hide");
   $(".teams-container").addClass("hide");
 };
@@ -126,7 +128,12 @@ const hideTeamModal = () => {
 
 const showTeams = () => {
   hideTeamModal();
+  hideMemberModal();
   $(".teams-container").removeClass("hide");
+  $(".team-show-container").addClass("hide");
+};
+
+const hideTeams = () => {
   $(".team-show-container").addClass("hide");
 };
 
@@ -193,6 +200,10 @@ const submitTeam = () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Member Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const hideMemberModal = () => {
+  $(".member-modal").addClass("hide");
+};
+
 const showMemberModal = () => {
   $(".member-modal").removeClass("hide");
 };
