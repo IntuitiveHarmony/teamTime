@@ -164,6 +164,7 @@ const showTeamModal = () => {
 };
 
 const hideTeamModal = () => {
+  displayTeams();
   $(".team-modal").addClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
