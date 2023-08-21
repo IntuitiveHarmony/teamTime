@@ -60,6 +60,22 @@ const updateLocalTime = () => {
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// About Functions
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const showAbout = () => {
+  console.log("about");
+  hideTeamModal();
+  hideMemberModal();
+  hideTeamShow();
+  hideTeams();
+  $(".about").removeClass("hide");
+};
+
+const hideAbout = () => {
+  $(".about").addClass("hide");
+};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Team Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Generate Names
@@ -157,6 +173,8 @@ const generateTeamName = () => {
 };
 
 const showTeamModal = () => {
+  hideTeamShow();
+  hideAbout();
   hideMemberModal();
   hideTeams();
   $(".team-modal").removeClass("hide");
@@ -172,13 +190,17 @@ const hideTeamModal = () => {
 
 const showTeams = () => {
   displayTeams();
+  hideAbout();
   hideTeamModal();
   hideMemberModal();
   $(".team-show-container").addClass("hide");
 };
+const hideTeamShow = () => {
+  $(".team-show-container").addClass("hide");
+};
 
 const hideTeams = () => {
-  $(".team-show-container").addClass("hide");
+  $(".teams-container").addClass("hide");
 };
 
 const displayTeams = () => {
@@ -208,8 +230,7 @@ const writeTeamsToDOM = (teams) => {
     const teamName = teams[i].name;
     const teamMembers = teams[i].members;
     const newLi = $("<li>")
-      .addClass("team-button")
-      .addClass("secondary-card")
+      .addClass("team-button secondary-card link")
       .attr("id", `team-${i}`);
     const nameContainer = $("<div>")
       .addClass("team-name-container")
@@ -299,6 +320,9 @@ $(() => {
   updateLocalTime();
   // Update the time every second
   setInterval(updateLocalTime, 1000);
+
+  // About Buttons
+  $(".nav-title").click(showAbout);
 
   // Team Buttons
   $("#add-team").click(showTeamModal);

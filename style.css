@@ -78,6 +78,7 @@ button {
   font-weight: inherit;
   line-height: inherit;
 
+  cursor: pointer;
   height: fit-content;
   width: fit-content;
   padding: .3em;
@@ -87,6 +88,9 @@ button {
   border-radius: 5px;
   box-shadow: -1px 1px var(--light-accent);
   background-color: var(--dark-accent);
+}
+.link {
+  cursor: pointer;
 }
 .cancel-btn {
   background-color: var(--red);
@@ -197,5 +201,5 @@ button {
   cursor: pointer;
   color: var(--secondary-light);
   padding-right: .5em;
-  padding-left: .3em;
+  /* padding-left: .1em; */
 }
