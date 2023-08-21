@@ -170,9 +170,9 @@ const hideTeamModal = () => {
 };
 
 const showTeams = () => {
+  displayTeams();
   hideTeamModal();
   hideMemberModal();
-  $(".teams-container").removeClass("hide");
   $(".team-show-container").addClass("hide");
 };
 
@@ -181,16 +181,22 @@ const hideTeams = () => {
 };
 
 const displayTeams = () => {
+  $(".teams-container").removeClass("hide");
   console.log("display teams");
   const transaction = db.transaction([DB_STORE_NAME], "readonly");
   const store = transaction.objectStore(DB_STORE_NAME);
   const countRequest = store.count();
 
-  let teamCount;
-
   countRequest.onsuccess = () => {
     teamCount = countRequest.result;
-    console.log(teamCount);
+
+    if (teamCount > 0) {
+      $(".teams-message").addClass("hide");
+      console.log("we got some teams");
+    } else {
+      console.log("teams??", teamCount);
+      $(".teams-message").removeClass("hide");
+    }
   };
 
   // make sure teams don't stack
