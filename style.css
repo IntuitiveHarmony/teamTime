@@ -56,6 +56,9 @@ table {
   --secondary-dark: #4b3f72;
   --secondary-light: #ffc857;
   --warning-color: magenta;
+  --red: rgb(197, 91, 181);
+  --yellow: rgb(253, 194, 2);
+  --green: rgb(114, 197, 91);
 }
 body {
   font-family: Tahoma, sans-serif;
@@ -64,6 +67,35 @@ body {
   flex-direction: column;
   min-height: 100vh;
   min-width: 100vw;
+}
+button {
+  /* reset button style */
+  background-color: transparent;
+  border-width: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+
+  height: fit-content;
+  width: fit-content;
+  padding: .3em;
+  padding-right: .5em;
+  padding-left: .5em;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  box-shadow: -1px 1px var(--light-accent);
+  background-color: var(--dark-accent);
+}
+.cancel-btn {
+  background-color: var(--red);
+}
+.warning-btn {
+  background-color: var(--yellow);
+}
+.submit-btn {
+  background-color: var(--green);
 }
 .navbar {
   display: flex;
@@ -97,8 +129,11 @@ body {
 .local {
   background-color: var(--secondary-light);
 }
+.team-modal {
+  background-color: var(--secondary-dark);
+}
 .team-form {
-  gap: 3em;
+  border: 3px;
   width: 100%;
 }
 .team-validate {
@@ -132,14 +167,17 @@ body {
   gap: .4em;
   
 }
-.team-button {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
+.secondary-card {
   padding: .7em;
   background-color: var(--secondary-dark);
   color: rgb(193, 249, 255);
   border: 1px solid var(--dark-color);
+
+}
+.team-button {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
 }
 .hide{
   display: none;

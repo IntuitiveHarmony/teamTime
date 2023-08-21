@@ -207,7 +207,10 @@ const writeTeamsToDOM = (teams) => {
   for (let i = 0; i < teams.length; i++) {
     const teamName = teams[i].name;
     const teamMembers = teams[i].members;
-    const newLi = $("<li>").addClass("team-button").attr("id", `team-${i}`);
+    const newLi = $("<li>")
+      .addClass("team-button")
+      .addClass("secondary-card")
+      .attr("id", `team-${i}`);
     const nameContainer = $("<div>")
       .addClass("team-name-container")
       .text(`${teamName}`)
