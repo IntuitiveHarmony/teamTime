@@ -58,6 +58,7 @@ table {
   --warning-color: magenta;
 }
 body {
+  font-family: Tahoma, sans-serif;
   background-color: var(--dark-accent);
   display: flex;
   flex-direction: column;
@@ -129,13 +130,15 @@ body {
 .teams-index {
   display: flex;
   flex-direction: column;
-  gap: .2em;
+  gap: .4em;
   
 }
 .team-button {
   display: flex;
   justify-content: space-between;
-  padding: .2em;
+  padding: .7em;
+  background-color: var(--secondary-dark);
+  color: rgb(193, 249, 255);
   border: 1px solid var(--dark-color);
 }
 .hide{
