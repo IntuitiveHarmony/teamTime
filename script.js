@@ -243,6 +243,7 @@ const writeTeamsToDOM = (teams) => {
     $(".teams-index").append(newLi);
     // Single out team's onClick for "Show View"
     $(`#team-${i}`).on("click", () => {
+      writeMembersToDOM(teams[i].id);
       $(".team-show-container").removeClass("hide");
       $(".teams-container").addClass("hide");
       // Pass index to the show page
@@ -303,17 +304,9 @@ const addMemberToTeam = (teamId, newMember) => {
   const store = transaction.objectStore(DB_STORE_NAME);
 
   // Get team from IndexedDB
-  console.log("Team ID: ", teamId);
-
-  transaction.oncomplete = (event) => {
-    console.log("transaction complete");
-  };
-
   const getRequest = store.get(teamId);
   getRequest.onsuccess = (event) => {
     const team = event.target.result;
-    console.log(team);
-    console.log("this is the team to add to", team);
 
     // Update the team's members array
     team.members.push(newMember);
@@ -322,6 +315,7 @@ const addMemberToTeam = (teamId, newMember) => {
     const updateRequest = store.put(team);
 
     updateRequest.onsuccess = () => {
+      writeMembersToDOM(teamId);
       console.log("Member added to team");
       // Perform any further actions after adding the member
     };
@@ -355,6 +349,27 @@ const submitMember = () => {
   cancelMember();
 };
 
+const writeMembersToDOM = (teamId) => {
+  const transaction = db.transaction([DB_STORE_NAME], "readonly");
+  const store = transaction.objectStore(DB_STORE_NAME);
+  const getRequest = store.get(teamId);
+
+  getRequest.onsuccess = (event) => {
+    const container = $(".member-container");
+    container.empty();
+    const members = event.target.result.members;
+    for (let i = 0; i < members.length; i++) {
+      const memberCard = $("<div>")
+        .addClass("member-card")
+        .text(members[i].name)
+        .appendTo(container);
+
+      console.log(members[i].name);
+    }
+  };
+};
+
+// may not need to do this
 const updateFooterPosition = () => {
   const contentHeight = $("body").height();
   const windowHeight = $(window).height();
