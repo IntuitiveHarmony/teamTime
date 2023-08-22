@@ -355,6 +355,24 @@ const submitMember = () => {
   hideMemberModal();
 };
 
+const updateFooterPosition = () => {
+  const contentHeight = $("body").height();
+  const windowHeight = $(window).height();
+  const footerHeight = $(".footer").outerHeight();
+
+  if (contentHeight + footerHeight < windowHeight) {
+    $(".footer").css({
+      position: "fixed",
+      bottom: 0,
+    });
+  } else {
+    $(".footer").css({
+      position: "relative",
+      bottom: "auto",
+    });
+  }
+};
+
 $(() => {
   // Update the time immediately when the page loads
   updateLocalTime();
@@ -375,4 +393,8 @@ $(() => {
   $("#add-member").click(showMemberModal);
   $("#cancel-member").click(cancelMember);
   $("#submit-member").click(submitMember);
+
+  // Update footer position on page load and when the window is resized
+  updateFooterPosition();
+  $(window).on("resize", updateFooterPosition);
 });
