@@ -335,8 +335,8 @@ const addMemberToTeam = (teamId, newMember) => {
 };
 
 const submitMember = () => {
-  // Grab the team index
-  const teamId = $(".team-header").attr("index-id");
+  // Grab the team index, it is a string from the HTML the DB needs an int
+  const teamId = parseInt($(".team-header").attr("index-id"));
 
   // const teamsJSON = localStorage.getItem("teams");
   // const existingTeams = JSON.parse(teamsJSON);
@@ -352,7 +352,7 @@ const submitMember = () => {
 
   addMemberToTeam(teamId, newMember);
 
-  hideMemberModal();
+  cancelMember();
 };
 
 const updateFooterPosition = () => {
