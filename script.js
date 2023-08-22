@@ -295,23 +295,65 @@ const cancelMember = () => {
   $("#member-location").val("");
 };
 
+const addMemberToTeam = (teamId, newMember) => {
+  console.log(`add member to team ${teamId}`, newMember);
+  // Start a readwrite transaction on the IndexedDB
+  const transaction = db.transaction([DB_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_STORE_NAME);
+
+  // Get team from IndexedDB
+  console.log("Team ID: ", teamId);
+
+  transaction.oncomplete = (event) => {
+    console.log("transaction complete");
+  };
+
+  const getRequest = store.get(teamId);
+  getRequest.onsuccess = (event) => {
+    const team = event.target.result;
+    console.log(event.target);
+    console.log("this is the team to add to", team);
+
+    // Update the team's members array
+    if (!team.members) {
+      team.members = [];
+    }
+    team.members.push(newMember);
+
+    // Update the team in IndexedDB with the modified 'members' array
+    const updateRequest = store.put(team);
+
+    updateRequest.onsuccess = () => {
+      console.log("Member added to team");
+      // Perform any further actions after adding the member
+    };
+    updateRequest.onerror = (event) => {
+      console.log("Error updating team with new member:", event.target.error);
+    };
+  };
+  getRequest.onerror = (event) => {
+    console.log("Error fetching team:", event.target.error);
+  };
+};
+
 const submitMember = () => {
   // Grab the team index
-  const index = $(".team-header").attr("index");
+  const teamId = $(".team-header").attr("index-id");
 
-  const teamsJSON = localStorage.getItem("teams");
-  const existingTeams = JSON.parse(teamsJSON);
-  console.log(existingTeams[index]);
-  const existingMembers = existingTeams[index].members;
+  // const teamsJSON = localStorage.getItem("teams");
+  // const existingTeams = JSON.parse(teamsJSON);
+  // console.log(existingTeams[index]);
+  // const existingMembers = existingTeams[index].members;
 
   const newMember = {
     name: $("#member-name").val(),
     location: $("#member-location").val(),
     timeZone: $("#timezone-offset").val(),
   };
+  console.log(teamId, newMember);
 
-  console.log(existingMembers);
-  console.log(newMember);
+  addMemberToTeam(teamId, newMember);
+
   hideMemberModal();
 };
 
