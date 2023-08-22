@@ -68,11 +68,11 @@ const showAbout = () => {
   hideMemberModal();
   hideTeamShow();
   hideTeams();
-  $(".about").removeClass("hide");
+  $("#about-card").removeClass("hide");
 };
 
 const hideAbout = () => {
-  $(".about").addClass("hide");
+  $("#about-card").addClass("hide");
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -295,8 +295,9 @@ const cancelMember = () => {
   $("#member-location").val("");
 };
 
+// This puts new member into the DB
 const addMemberToTeam = (teamId, newMember) => {
-  console.log(`add member to team ${teamId}`, newMember);
+  console.log(`From addMemberToTeam ${teamId}`, newMember);
   // Start a readwrite transaction on the IndexedDB
   const transaction = db.transaction([DB_STORE_NAME], "readwrite");
   const store = transaction.objectStore(DB_STORE_NAME);
@@ -311,13 +312,10 @@ const addMemberToTeam = (teamId, newMember) => {
   const getRequest = store.get(teamId);
   getRequest.onsuccess = (event) => {
     const team = event.target.result;
-    console.log(event.target);
+    console.log(team);
     console.log("this is the team to add to", team);
 
     // Update the team's members array
-    if (!team.members) {
-      team.members = [];
-    }
     team.members.push(newMember);
 
     // Update the team in IndexedDB with the modified 'members' array
@@ -350,7 +348,7 @@ const submitMember = () => {
     location: $("#member-location").val(),
     timeZone: $("#timezone-offset").val(),
   };
-  console.log(teamId, newMember);
+  console.log("This is from submitMember", teamId, newMember);
 
   addMemberToTeam(teamId, newMember);
 
@@ -364,7 +362,7 @@ $(() => {
   setInterval(updateLocalTime, 1000);
 
   // About Buttons
-  $(".nav-title").click(showAbout);
+  $(".about").click(showAbout);
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
