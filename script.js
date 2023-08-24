@@ -40,6 +40,17 @@ request.onupgradeneeded = (event) => {
 request.onerror = (event) => {
   console.error("Database error:", event.target.error);
 };
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Time Zone API Functions
+// https://ipgeolocation.io/documentation/timezone-api.html
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const callAPI = () => {
+  const key = process.env.API_KEY;
+  const location = $("#member-location").val();
+
+  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${key}&location=${location}`;
+  console.log(URL);
+};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Functions
@@ -49,7 +60,7 @@ const getTime = () => {
   const options = {
     hour: "numeric",
     minute: "numeric",
-    second: "numeric",
+    // second: "numeric",
     timeZoneName: "short",
   };
   return currentTime.toLocaleTimeString(undefined, options);
@@ -58,6 +69,23 @@ const getTime = () => {
 const updateLocalTime = () => {
   $(".local-time").text(getTime);
 };
+
+// const getTeamTime = (gmtOffset) => {
+//   console.log(gmtOffset);
+//   // Get the current UTC time
+//   const currentUtcTime = new Date();
+
+//   // Calculate the GMT time using the offset
+//   const gmtTime = new Date(currentUtcTime.getTime() + gmtOffset * 3600000); // Convert hours to milliseconds
+
+//   // Format and display the time
+//   const formattedTime = gmtTime.toISOString().replace("T", " ").substr(0, 19);
+//   console.log(
+//     `The current time in GMT${
+//       gmtOffset > 0 ? "+" : ""
+//     }${gmtOffset}: ${formattedTime}`
+//   );
+// };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // About Functions
@@ -332,17 +360,11 @@ const submitMember = () => {
   // Grab the team index, it is a string from the HTML the DB needs an int
   const teamId = parseInt($(".team-header").attr("index-id"));
 
-  // const teamsJSON = localStorage.getItem("teams");
-  // const existingTeams = JSON.parse(teamsJSON);
-  // console.log(existingTeams[index]);
-  // const existingMembers = existingTeams[index].members;
-
   const newMember = {
     name: $("#member-name").val(),
     location: $("#member-location").val(),
-    timeZone: $("#timezone-offset").val(),
+    gmtOffset: parseInt($("#timezone-offset").val()),
   };
-  console.log("This is from submitMember", teamId, newMember);
 
   addMemberToTeam(teamId, newMember);
 
@@ -359,9 +381,11 @@ const writeMembersToDOM = (teamId) => {
     container.empty();
     const members = event.target.result.members;
     for (let i = 0; i < members.length; i++) {
-      const memberCard = $("<div>")
+      getTeamTime(members[i].gmtOffset);
+
+      const memberCard = $("<li>")
         .addClass("member-card")
-        .text(members[i].name)
+        .text(`${members[i].name} - ${members[i].location} - `)
         .appendTo(container);
 
       console.log(members[i].name);
@@ -408,6 +432,7 @@ $(() => {
   $("#add-member").click(showMemberModal);
   $("#cancel-member").click(cancelMember);
   $("#submit-member").click(submitMember);
+  $("#location-search-btn").click(callAPI);
 
   // Update footer position on page load and when the window is resized
   updateFooterPosition();
