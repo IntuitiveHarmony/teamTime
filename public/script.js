@@ -44,18 +44,50 @@ request.onerror = (event) => {
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const callAPI = async () => {
-  // const location = $("#member-location").val();
-  $("#location-form").submit(async (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-    const location = $("#member-location").val();
+  // clear any existing searches
+  $(".response-data").empty();
+  // get info from form
+  const location = $("#member-location").val();
+  // show the spinner instead of button
+  $("#location-search-loading").removeClass("hide");
+  $("#location-search-btn").addClass("hide");
 
-    try {
-      const response = await axios.post("/timeApi", { location });
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error:", error);
+  try {
+    // make the call
+    const response = await axios.post("/timeApi", { location });
+    // Response variables
+    const dataUnixStamp = response.data.date_time_unix;
+    const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
+    const timeDiff = currentTimestamp - dataUnixStamp;
+    console.log(timeDiff);
+    const minutes = Math.floor((timeDiff / 60) % 60);
+    const hours = Math.floor((timeDiff / 3600) % 24);
+
+    let dstBool = false;
+
+    if (response.data.dst_savings) {
+      dstBool = true;
     }
-  });
+
+    const $cell1 = $(`<td colspan="2">`)
+      .addClass("timezone-data")
+      .text(`Did you mean: ${response.data.timezone}?\n`)
+      .appendTo(".response-data");
+    const $cell2 = $(`<td colspan="2">`)
+      .addClass("timezone-data")
+      .text(
+        `Current Time: ${response.data.time_12} - Local offset ${hours}:${minutes} - Observe DST: ${dstBool} \n`
+      )
+      .appendTo(".response-data");
+
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    // Show button instead of spinner
+    $("#location-search-loading").addClass("hide");
+    $("#location-search-btn").removeClass("hide");
+  }
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -424,6 +456,19 @@ $(() => {
   // Update the time every second
   setInterval(updateLocalTime, 1000);
 
+  // Add a keydown event listener to the input fields within the form
+  $("#member-location").keydown((event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default form submission behavior
+      callAPI(); // Call the API function
+    }
+  });
+
+  $("#location-form").submit(async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    await callAPI(); // Call the API function
+  });
+
   // About Buttons
   $(".about").click(showAbout);
 
@@ -438,7 +483,7 @@ $(() => {
   $("#add-member").click(showMemberModal);
   $("#cancel-member").click(cancelMember);
   $("#submit-member").click(submitMember);
-  $("#location-search-btn").click(callAPI);
+  // $("#location-search-btn").click(callAPI);
 
   // Update footer position on page load and when the window is resized
   updateFooterPosition();

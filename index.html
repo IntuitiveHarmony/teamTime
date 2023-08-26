@@ -86,9 +86,12 @@
               <td>
                 <input type="text" id="member-location">
                 <button type="submit" id="location-search-btn">Search</button>
+                <button class="hide disabled" id="location-search-loading"><i class="fa-pulse fa-solid fa-spinner"></i></button>
               </td>
             </form>
           </tr>
+          <!-- Response from time zone database -->
+          <tr class="response-data"></tr>
           <tr>
             <td>
               <button class="cancel-btn" id="cancel-member">Cancel</button>

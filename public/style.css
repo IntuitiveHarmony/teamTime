@@ -226,3 +226,9 @@ button {
   margin-top: .5em;
   margin-bottom: .5em;
 }
+.location-search-loading {
+  display: inline;
+}
+.disabled {
+  background-color: grey;
+}
