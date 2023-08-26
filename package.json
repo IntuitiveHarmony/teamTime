@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/IntuitiveHarmony/teamTime/issues"
   },
-  "homepage": "https://github.com/IntuitiveHarmony/teamTime#readme"
+  "homepage": "https://github.com/IntuitiveHarmony/teamTime#readme",
+   "engines": {
+    "node": "16.16.0"
+  }
 }
