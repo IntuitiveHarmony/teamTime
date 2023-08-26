@@ -79,6 +79,9 @@
             </td>
           </tr>
           <tr>
+            <td class="warning hide" id="member-name-warning" colspan="2">Please fill out Name</td>
+          </tr>
+          <tr>
             <form action="" id="location-form">
               <td>
                 <label for="member-location">Search Location: </label>
@@ -88,6 +91,9 @@
                 <button type="submit" id="location-search-btn">Search</button>
                 <button class="hide disabled" id="location-search-loading"><i class="fa-pulse fa-solid fa-spinner"></i></button>
               </td>
+                <tr>
+                  <td class="warning hide" id="member-location-warning" colspan="2">Please search for Location</td>
+                </tr>
             </form>
           </tr>
           <!-- Response from time zone database -->
@@ -97,7 +103,8 @@
               <button class="cancel-btn" id="cancel-member">Cancel</button>
             </td>
             <td>
-              <button class="submit-btn" id="submit-member">Add Member</button>
+              <button class="submit-btn disabled" id="submit-member">Add Member</button>
+              <button class="submit-btn hide" id="submit-member">Add Member</button>
             </td>
           </tr>
         </table>

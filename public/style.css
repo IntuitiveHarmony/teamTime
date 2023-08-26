@@ -179,7 +179,7 @@ button {
   background-color: var(--secondary-dark);
   color: var(--white);
   border: 1px solid var(--dark-color);
-
+  
 }
 .team-button {
   display: flex;
@@ -231,4 +231,7 @@ button {
 }
 .disabled {
   background-color: grey;
+}
+.warning {
+  color: var(--secondary-light);
 }

@@ -84,6 +84,8 @@ const callAPI = async () => {
   } catch (error) {
     console.error("Error:", error);
   } finally {
+    // Remove grey from button
+    $("#submit-member").removeClass("disabled");
     // Show button instead of spinner
     $("#location-search-loading").addClass("hide");
     $("#location-search-btn").removeClass("hide");
@@ -347,6 +349,8 @@ const submitTeam = () => {
 // Member Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const hideMemberModal = () => {
+  $("#member-name-warning").addClass("hide");
+  $("#member-location-warning").addClass("hide");
   $("#add-member").removeClass("hide");
   $(".member-modal").addClass("hide");
 };
@@ -395,18 +399,29 @@ const addMemberToTeam = (teamId, newMember) => {
 };
 
 const submitMember = () => {
+  // start with button greyed out
+  $("#submit-member").addClass("disabled");
   // Grab the team index, it is a string from the HTML the DB needs an int
   const teamId = parseInt($(".team-header").attr("index-id"));
 
-  const newMember = {
-    name: $("#member-name").val(),
-    location: $("#member-location").val(),
-    gmtOffset: parseInt($("#timezone-offset").val()),
-  };
+  const name = $("#member-name").val();
+  const location = $("#member-location").val();
 
-  addMemberToTeam(teamId, newMember);
+  // validate Name in form
+  if (!name && !location) {
+    $("#member-name-warning").removeClass("hide");
+    $("#member-location-warning").removeClass("hide");
+  } else {
+    const newMember = {
+      name: name,
+      location: $("#member-location").val(),
+      gmtOffset: parseInt($("#timezone-offset").val()),
+    };
 
-  cancelMember();
+    addMemberToTeam(teamId, newMember);
+
+    cancelMember();
+  }
 };
 
 const writeMembersToDOM = (teamId) => {
@@ -426,7 +441,7 @@ const writeMembersToDOM = (teamId) => {
         .text(`${members[i].name} - ${members[i].location} - `)
         .appendTo(container);
 
-      console.log(members[i].name);
+      // console.log(members[i].name);
     }
   };
 };
