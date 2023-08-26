@@ -17,7 +17,7 @@
 <body>
 
   <nav class="navbar">
-    <p class="nav-title link about">Team Time</p>
+    <p class="nav-title link about" id="about">Team Time</p>
     <div class="nav-menu">
       <div class="icon-container link" id="show-teams">
         <i class="fa-solid fa-user-group"></i>
@@ -92,7 +92,7 @@
                 <button class="hide disabled" id="location-search-loading"><i class="fa-pulse fa-solid fa-spinner"></i></button>
               </td>
                 <tr>
-                  <td class="warning hide" id="member-location-warning" colspan="2">Please search for and confirm Location</td>
+                  <td class="warning hide" id="member-location-warning" colspan="2">Please search for Location</td>
                 </tr>
             </form>
           </tr>
@@ -126,11 +126,11 @@
         </tr>
         <tr>
           <td>
-            <button class="cancel-team cancel-btn">Cancel</button>
+            <button class="cancel-btn" id="cancel-team">Cancel</button>
           </td>
           <td>
-            <button class="generate-team warning-btn">Generate</button>
-            <button class="submit-team submit-btn disabled" id="add-btn">Add Team</button>
+            <button class="warning-btn" id="generate-team">Generate</button>
+            <button class="submit-team submit-btn disabled" id="add-team-btn">Add Team</button>
           </td>
         </tr>
         <tr>
@@ -144,7 +144,7 @@
 
     <footer class="footer">
       <div class="link-container left">
-        <p class="git-link about">About</p>
+        <p class="git-link about" id="about">About</p>
         <a href="https://github.com/IntuitiveHarmony/teamTime#readme" class="git-link" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://www.linkedin.com/in/jason-horst/" class="git-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>

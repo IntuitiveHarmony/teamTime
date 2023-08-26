@@ -132,7 +132,6 @@ const updateLocalTime = () => {
 // About Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const showAbout = () => {
-  console.log("about");
   hideTeamModal();
   hideMemberModal();
   hideTeamShow();
@@ -256,7 +255,7 @@ const hideTeamModal = () => {
   $(".team-modal").addClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
-  $("#add-btn").addClass("disabled");
+  $("#add-team-btn").addClass("disabled");
 };
 
 const showTeams = () => {
@@ -325,16 +324,15 @@ const writeTeamsToDOM = (teams) => {
 
 // validate the team
 const validateTeamForm = () => {
-  console.log("validati");
   $(".team-validate").addClass("hide");
   const teamName = $("#team-name").val();
 
   if (!teamName) {
-    $("#add-btn").addClass("disabled");
+    $("#add-team-btn").addClass("disabled");
     $(".team-validate").removeClass("hide");
     return false;
   } else {
-    $("#add-btn").removeClass("disabled");
+    $("#add-team-btn").removeClass("disabled");
     $(".team-validate").addClass("hide");
     return true;
   }
@@ -461,8 +459,6 @@ const submitMember = () => {
 
     addMemberToTeam(teamId, newMember);
     cancelMember();
-  } else {
-    console.log("for pleae");
   }
 };
 
@@ -528,16 +524,18 @@ $(() => {
 
   // Validate the forms as they are updated by user
   $("#team-name").on("input", validateTeamForm);
+  $("#member-name").on("input", validateMemberForm);
+  $("#member-location").on("input", validateMemberForm);
 
   // About Buttons
-  $(".about").click(showAbout);
+  $("#about").click(showAbout);
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
   $("#show-teams").click(showTeams);
-  $(".cancel-team").click(hideTeamModal);
-  $(".submit-team").click(submitTeam);
-  $(".generate-team").click(generateTeamName);
+  $("#cancel-team").click(hideTeamModal);
+  $("#add-team-btn").click(submitTeam);
+  $("#generate-team").click(generateTeamName);
 
   // Member Buttons
   $("#add-member").click(showMemberModal);
