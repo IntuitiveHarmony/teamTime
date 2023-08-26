@@ -9,11 +9,12 @@ require("dotenv").config();
 
 // Serve static files, including the favicon
 app.use(express.static("public"));
+app.use("/favicon.ico", express.static("images/favicon.ico"));
 // app.use(express.static(path.join(__dirname, "public")));
 // Serve the favicon only when requested
-app.get("/favicon.ico", (req, res) => {
-  res.sendFile(path.join(__dirname, "favicon.ico"));
-});
+// app.get("/favicon.ico", (req, res) => {
+//   res.sendFile(path.join(__dirname, "favicon.ico"));
+// });
 
 // Use bodyParser middleware to parse request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
