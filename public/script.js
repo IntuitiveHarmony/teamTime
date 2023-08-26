@@ -42,14 +42,20 @@ request.onerror = (event) => {
 };
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Zone API Functions
-// https://ipgeolocation.io/documentation/timezone-api.html
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const callAPI = () => {
-  const key = process.env.API_KEY;
-  const location = $("#member-location").val();
+const callAPI = async () => {
+  // const location = $("#member-location").val();
+  $("#location-form").submit(async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const location = $("#member-location").val();
 
-  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${key}&location=${location}`;
-  console.log(URL);
+    try {
+      const response = await axios.post("/timeApi", { location });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  });
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
