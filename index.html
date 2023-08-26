@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script src="https://kit.fontawesome.com/0920e202c7.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <link rel="icon" type="image/x-icon" href="/images/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
+
   <title>Team Time</title>
 </head>
 <body>
@@ -75,13 +79,15 @@
             </td>
           </tr>
           <tr>
-            <td>
-              <label for="member-location">Search Location: </label>
-            </td>
-            <td>
-              <input type="text" id="member-location">
-              <button id="location-search-btn">Search</button>
-            </td>
+            <form action="#" id="location-form">
+              <td>
+                <label for="member-location">Search Location: </label>
+              </td>
+              <td>
+                <input type="text" id="member-location">
+                <button type="submit" id="location-search-btn">Search</button>
+              </td>
+            </form>
           </tr>
           <tr>
             <td></td>

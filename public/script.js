@@ -44,11 +44,21 @@ request.onerror = (event) => {
 // Time Zone API Functions
 // https://ipgeolocation.io/documentation/timezone-api.html
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const callAPI = () => {
-  const location = $("#member-location").val();
+const callAPI = async () => {
+  // const location = $("#member-location").val();
+  const form = document.getElementById("location-form");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const location = document.getElementById("member-location").value;
 
-  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${apiKey}&location=${location}`;
-  console.log(URL);
+    try {
+      const response = await axios.post("/timeApi", { location });
+      console.log(response.data);
+      // Process the response data as needed
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  });
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
