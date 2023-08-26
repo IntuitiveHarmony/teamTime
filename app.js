@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 const PORT = 3000;
 
 require("dotenv").config();
@@ -22,12 +23,23 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+const getData = async (url) => {
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+// https://ipgeolocation.io/documentation/timezone-api.html
 app.post("/timeApi", (req, res) => {
   const URL = `https://api.ipgeolocation.io/timezone?apiKey=${process.env.API_KEY}&location=${req.body.location}`;
   console.log(URL);
 
-  // res.json({ message: "Request received", location: location });
-  // console.log(res);
+  getData(URL);
+
+  res.json({ message: "Request received" });
 });
 
 app.listen(PORT, () => {
