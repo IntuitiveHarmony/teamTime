@@ -3,6 +3,7 @@ const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const lists = require("./lists.js");
 const PORT = process.env.PORT || 3000;
 
 require("dotenv").config();
@@ -18,6 +19,13 @@ app.use(bodyParser.json());
 // Render the html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/lists", (req, res) => {
+  res.json({
+    nouns: lists.nouns,
+    adjectives: lists.adjectives,
+  });
 });
 
 // https://ipgeolocation.io/documentation/timezone-api.html

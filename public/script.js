@@ -44,6 +44,7 @@ request.onerror = (event) => {
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const callAPI = async () => {
+  validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
   // get info from form
@@ -84,6 +85,8 @@ const callAPI = async () => {
   } catch (error) {
     console.error("Error:", error);
   } finally {
+    // Remove grey from button
+    $("#submit-member").removeClass("disabled");
     // Show button instead of spinner
     $("#location-search-loading").addClass("hide");
     $("#location-search-btn").removeClass("hide");
@@ -129,7 +132,6 @@ const updateLocalTime = () => {
 // About Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const showAbout = () => {
-  console.log("about");
   hideTeamModal();
   hideMemberModal();
   hideTeamShow();
@@ -144,98 +146,18 @@ const hideAbout = () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Team Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Generate Names
-const nouns = [
-  "Dogs",
-  "Cats",
-  "Elephants",
-  "Lions",
-  "Giraffes",
-  "Monkeys",
-  "Dolphins",
-  "Tigers",
-  "Penguins",
-  "Kangaroos",
-  "Koalas",
-  "Octopi",
-  "Zebras",
-  "Rhinos",
-  "Cheetahs",
-  "Foxes",
-  "Owls",
-  "Bears",
-  "Rabbits",
-  "Hippos",
-  "Peacocks",
-  "Sharks",
-  "Crocodiles",
-  "Butterflies",
-  "Seahorses",
-  "Platypi",
-  "Chimpanzees",
-  "Pandas",
-  "Horses",
-  "Llamas",
-  "Camels",
-  "Hedgehogs",
-  "Sloths",
-  "Raccoons",
-  "Flamingos",
-  "Parrots",
-  "Orangutans",
-  "Snails",
-  "Walruses",
-  "Alpacas",
-];
-const adjectives = [
-  "Zany",
-  "Whimsical",
-  "Goofy",
-  "Bizarre",
-  "Quirky",
-  "Wacky",
-  "Ludicrous",
-  "Absurd",
-  "Ridiculous",
-  "Hilarious",
-  "Nutty",
-  "Bonkers",
-  "Silly",
-  "Dippy",
-  "Loony",
-  "Offbeat",
-  "Far-out",
-  "Funky",
-  "Outlandish",
-  "Kooky",
-  "Peculiar",
-  "Flaky",
-  "Wackadoo",
-  "Unconventional",
-  "Daft",
-  "Nonsensical",
-  "Preposterous",
-  "Whacky",
-  "Eccentric",
-  "Cuckoo",
-  "Batty",
-  "Daffy",
-  "Absurd",
-  "Bunkers",
-  "Freaky",
-  "Kookaburra",
-  "Bananas",
-  "Cockamamie",
-  "Dippy",
-  "Screwball",
-];
+const generateTeamName = async () => {
+  // Get list from other file
+  const response = await axios.get("/lists");
+  const nouns = response.data.nouns;
+  const adjectives = response.data.adjectives;
 
-const generateTeamName = () => {
   const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
   const randomAdjective =
     adjectives[Math.floor(Math.random() * adjectives.length)];
 
   $("#team-name").val(`${randomAdjective} ${randomNoun}`);
+  validateTeamForm();
 };
 
 const showTeamModal = () => {
@@ -252,6 +174,7 @@ const hideTeamModal = () => {
   $(".team-modal").addClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
+  $("#add-team-btn").addClass("disabled");
 };
 
 const showTeams = () => {
@@ -318,6 +241,22 @@ const writeTeamsToDOM = (teams) => {
   }
 };
 
+// validate the team
+const validateTeamForm = () => {
+  $(".team-validate").addClass("hide");
+  const teamName = $("#team-name").val();
+
+  if (!teamName) {
+    $("#add-team-btn").addClass("disabled");
+    $(".team-validate").removeClass("hide");
+    return false;
+  } else {
+    $("#add-team-btn").removeClass("disabled");
+    $(".team-validate").addClass("hide");
+    return true;
+  }
+};
+
 // Add new Team Names
 const submitTeam = () => {
   // Use the db object directly to interact with IndexedDB
@@ -331,15 +270,13 @@ const submitTeam = () => {
   };
 
   // Validate Team Name: display warning if empty name field
-  if (newTeam.name) {
+  if (validateTeamForm()) {
     //  Add the new team to the IndexedDB object store
     const addRequest = store.add(newTeam);
     addRequest.onsuccess = () => {
       hideTeamModal();
       displayTeams();
     };
-  } else {
-    $(".team-validate").css("display", "inline-block");
   }
 };
 
@@ -347,6 +284,8 @@ const submitTeam = () => {
 // Member Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const hideMemberModal = () => {
+  $("#member-name-warning").addClass("hide");
+  $("#member-location-warning").addClass("hide");
   $("#add-member").removeClass("hide");
   $(".member-modal").addClass("hide");
 };
@@ -394,19 +333,52 @@ const addMemberToTeam = (teamId, newMember) => {
   };
 };
 
+const validateMemberForm = () => {
+  const name = $("#member-name").val();
+  const location = $("#member-location").val();
+  // Clear warnings first
+  $("#member-name-warning").addClass("hide");
+  $("#member-location-warning").addClass("hide");
+
+  if (!name && !location) {
+    // If both fields are empty
+    $("#member-name-warning").removeClass("hide");
+    $("#member-location-warning").removeClass("hide");
+    return false;
+  } else if (!name) {
+    // If only the name field is empty
+    $("#member-name-warning").removeClass("hide");
+    return false;
+  } else if (!location) {
+    // If only the location field is empty
+    $("#member-location-warning").removeClass("hide");
+    return false;
+  } else {
+    // If both fields are filled
+    return true;
+  }
+};
+
 const submitMember = () => {
+  // start with button greyed out
+  $("#submit-member").addClass("disabled");
   // Grab the team index, it is a string from the HTML the DB needs an int
   const teamId = parseInt($(".team-header").attr("index-id"));
 
-  const newMember = {
-    name: $("#member-name").val(),
-    location: $("#member-location").val(),
-    gmtOffset: parseInt($("#timezone-offset").val()),
-  };
+  const name = $("#member-name").val();
+  const location = $("#member-location").val();
 
-  addMemberToTeam(teamId, newMember);
+  // validate Name in form
+  if (validateMemberForm()) {
+    const newMember = {
+      name: name,
+      location: $("#member-location").val(),
+      gmtOffset: parseInt($("#timezone-offset").val()),
+    };
 
-  cancelMember();
+    addMemberToTeam(teamId, newMember);
+    cancelMember();
+  }
 };
 
 const writeMembersToDOM = (teamId) => {
@@ -426,7 +398,7 @@ const writeMembersToDOM = (teamId) => {
         .text(`${members[i].name} - ${members[i].location} - `)
         .appendTo(container);
 
-      console.log(members[i].name);
+      // console.log(members[i].name);
     }
   };
 };
@@ -469,15 +441,20 @@ $(() => {
     await callAPI(); // Call the API function
   });
 
+  // Validate the forms as they are updated by user
+  $("#team-name").on("input", validateTeamForm);
+  $("#member-name").on("input", validateMemberForm);
+  $("#member-location").on("input", validateMemberForm);
+
   // About Buttons
-  $(".about").click(showAbout);
+  $("#about").click(showAbout);
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
   $("#show-teams").click(showTeams);
-  $(".cancel-team").click(hideTeamModal);
-  $(".submit-team").click(submitTeam);
-  $(".generate-team").click(generateTeamName);
+  $("#cancel-team").click(hideTeamModal);
+  $("#add-team-btn").click(submitTeam);
+  $("#generate-team").click(generateTeamName);
 
   // Member Buttons
   $("#add-member").click(showMemberModal);

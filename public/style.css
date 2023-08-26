@@ -49,6 +49,14 @@ table {
 /* end css reset */
 
 /* MY STUFF */
+
+/* Take over mobile view */
+@viewport {
+  width: device-width;
+  height: device-height;
+  viewport-fit: cover;
+}
+
 :root {
   --dark-color: #1f2041;
   --dark-accent: #19647e;
@@ -144,7 +152,6 @@ button {
 }
 .team-validate {
   color: var(--secondary-light);
-  display: none;
 }
 .nav-menu {
   display: flex;
@@ -179,7 +186,7 @@ button {
   background-color: var(--secondary-dark);
   color: var(--white);
   border: 1px solid var(--dark-color);
-
+  
 }
 .team-button {
   display: flex;
@@ -207,6 +214,11 @@ button {
   padding-right: .4em;
   padding-left: .2em;
 }
+.bright-link {
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--secondary-light);
+}
 .link-container {
   display: flex;
   flex-direction: row;
@@ -231,4 +243,13 @@ button {
 }
 .disabled {
   background-color: grey;
+}
+#location-search-btn {
+  background-color: var(--green);
+}
+.warning {
+  color: var(--secondary-light);
+}
+.about-content {
+  margin-bottom: .7em;
 }
