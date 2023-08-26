@@ -11,7 +11,7 @@ require("dotenv").config();
 app.use(express.static(path.join(__dirname, "public")));
 // Serve the favicon only when requested
 app.get("/favicon.ico", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "favicon.ico"));
+  res.sendFile(path.join(__dirname, "favicon.ico"));
 });
 
 // Use bodyParser middleware to parse request bodies
