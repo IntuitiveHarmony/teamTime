@@ -23,8 +23,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-const getData = async (url) => {};
-
 // https://ipgeolocation.io/documentation/timezone-api.html
 app.post("/timeApi", async (req, res) => {
   const URL = `https://api.ipgeolocation.io/timezone?apiKey=${process.env.API_KEY}&location=${req.body.location}`;
