@@ -146,93 +146,12 @@ const hideAbout = () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Team Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Generate Names
-const nouns = [
-  "Dogs",
-  "Cats",
-  "Elephants",
-  "Lions",
-  "Giraffes",
-  "Monkeys",
-  "Dolphins",
-  "Tigers",
-  "Penguins",
-  "Kangaroos",
-  "Koalas",
-  "Octopi",
-  "Zebras",
-  "Rhinos",
-  "Cheetahs",
-  "Foxes",
-  "Owls",
-  "Bears",
-  "Rabbits",
-  "Hippos",
-  "Peacocks",
-  "Sharks",
-  "Crocodiles",
-  "Butterflies",
-  "Seahorses",
-  "Platypi",
-  "Chimpanzees",
-  "Pandas",
-  "Horses",
-  "Llamas",
-  "Camels",
-  "Hedgehogs",
-  "Sloths",
-  "Raccoons",
-  "Flamingos",
-  "Parrots",
-  "Orangutans",
-  "Snails",
-  "Walruses",
-  "Alpacas",
-];
-const adjectives = [
-  "Zany",
-  "Whimsical",
-  "Goofy",
-  "Bizarre",
-  "Quirky",
-  "Wacky",
-  "Ludicrous",
-  "Absurd",
-  "Ridiculous",
-  "Hilarious",
-  "Nutty",
-  "Bonkers",
-  "Silly",
-  "Dippy",
-  "Loony",
-  "Offbeat",
-  "Far-out",
-  "Funky",
-  "Outlandish",
-  "Kooky",
-  "Peculiar",
-  "Flaky",
-  "Wackadoo",
-  "Unconventional",
-  "Daft",
-  "Nonsensical",
-  "Preposterous",
-  "Whacky",
-  "Eccentric",
-  "Cuckoo",
-  "Batty",
-  "Daffy",
-  "Absurd",
-  "Bunkers",
-  "Freaky",
-  "Kookaburra",
-  "Bananas",
-  "Cockamamie",
-  "Dippy",
-  "Screwball",
-];
+const generateTeamName = async () => {
+  // Get list from other file
+  const response = await axios.get("/lists");
+  const nouns = response.data.nouns;
+  const adjectives = response.data.adjectives;
 
-const generateTeamName = () => {
   const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
   const randomAdjective =
     adjectives[Math.floor(Math.random() * adjectives.length)];
