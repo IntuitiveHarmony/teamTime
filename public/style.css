@@ -49,6 +49,14 @@ table {
 /* end css reset */
 
 /* MY STUFF */
+
+/* Take over mobile view */
+@viewport {
+  width: device-width;
+  height: device-height;
+  viewport-fit: cover;
+}
+
 :root {
   --dark-color: #1f2041;
   --dark-accent: #19647e;
@@ -206,6 +214,11 @@ button {
   padding-right: .4em;
   padding-left: .2em;
 }
+.bright-link {
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--secondary-light);
+}
 .link-container {
   display: flex;
   flex-direction: row;
@@ -236,4 +249,7 @@ button {
 }
 .warning {
   color: var(--secondary-light);
+}
+.about-content {
+  margin-bottom: .7em;
 }
