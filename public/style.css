@@ -144,7 +144,6 @@ button {
 }
 .team-validate {
   color: var(--secondary-light);
-  display: none;
 }
 .nav-menu {
   display: flex;

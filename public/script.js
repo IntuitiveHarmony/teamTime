@@ -239,6 +239,7 @@ const generateTeamName = () => {
     adjectives[Math.floor(Math.random() * adjectives.length)];
 
   $("#team-name").val(`${randomAdjective} ${randomNoun}`);
+  validateTeamForm();
 };
 
 const showTeamModal = () => {
@@ -255,6 +256,7 @@ const hideTeamModal = () => {
   $(".team-modal").addClass("hide");
   $(".team-validate").addClass("hide");
   $("#team-name").val("");
+  $("#add-btn").addClass("disabled");
 };
 
 const showTeams = () => {
@@ -321,6 +323,23 @@ const writeTeamsToDOM = (teams) => {
   }
 };
 
+// validate the team
+const validateTeamForm = () => {
+  console.log("validati");
+  $(".team-validate").addClass("hide");
+  const teamName = $("#team-name").val();
+
+  if (!teamName) {
+    $("#add-btn").addClass("disabled");
+    $(".team-validate").removeClass("hide");
+    return false;
+  } else {
+    $("#add-btn").removeClass("disabled");
+    $(".team-validate").addClass("hide");
+    return true;
+  }
+};
+
 // Add new Team Names
 const submitTeam = () => {
   // Use the db object directly to interact with IndexedDB
@@ -334,15 +353,13 @@ const submitTeam = () => {
   };
 
   // Validate Team Name: display warning if empty name field
-  if (newTeam.name) {
+  if (validateTeamForm()) {
     //  Add the new team to the IndexedDB object store
     const addRequest = store.add(newTeam);
     addRequest.onsuccess = () => {
       hideTeamModal();
       displayTeams();
     };
-  } else {
-    $(".team-validate").css("display", "inline-block");
   }
 };
 
@@ -508,6 +525,9 @@ $(() => {
     event.preventDefault(); // Prevent the default form submission behavior
     await callAPI(); // Call the API function
   });
+
+  // Validate the forms as they are updated by user
+  $("#team-name").on("input", validateTeamForm);
 
   // About Buttons
   $(".about").click(showAbout);
