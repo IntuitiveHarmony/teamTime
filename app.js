@@ -23,23 +23,18 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-const getData = async (url) => {
+const getData = async (url) => {};
+
+// https://ipgeolocation.io/documentation/timezone-api.html
+app.post("/timeApi", async (req, res) => {
+  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${process.env.API_KEY}&location=${req.body.location}`;
+
   try {
-    const response = await axios.get(url);
-    console.log(response.data);
+    const response = await axios.get(URL);
+    res.json(response.data);
   } catch (error) {
     console.error("Error:", error);
   }
-};
-
-// https://ipgeolocation.io/documentation/timezone-api.html
-app.post("/timeApi", (req, res) => {
-  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${process.env.API_KEY}&location=${req.body.location}`;
-  console.log(URL);
-
-  getData(URL);
-
-  res.json({ message: "Request received" });
 });
 
 app.listen(PORT, () => {
