@@ -419,7 +419,7 @@ const writeMembersToDOM = (teamId) => {
     container.empty();
     const members = event.target.result.members;
     for (let i = 0; i < members.length; i++) {
-      getTeamTime(members[i].gmtOffset);
+      // getTeamTime(members[i].gmtOffset);
 
       const memberCard = $("<li>")
         .addClass("member-card")
@@ -463,7 +463,7 @@ $(() => {
       callAPI(); // Call the API function
     }
   });
-
+  // this is here so it doesn't bind to the element and render multiple searches
   $("#location-form").submit(async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     await callAPI(); // Call the API function
@@ -483,7 +483,6 @@ $(() => {
   $("#add-member").click(showMemberModal);
   $("#cancel-member").click(cancelMember);
   $("#submit-member").click(submitMember);
-  // $("#location-search-btn").click(callAPI);
 
   // Update footer position on page load and when the window is resized
   updateFooterPosition();
