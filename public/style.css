@@ -50,13 +50,6 @@ table {
 
 /* MY STUFF */
 
-/* Take over mobile view */
-@viewport {
-  width: device-width;
-  height: device-height;
-  viewport-fit: cover;
-}
-
 :root {
   --dark-color: #1f2041;
   --dark-accent: #19647e;
@@ -192,6 +185,12 @@ button {
   display: flex;
   flex-grow: 1;
   justify-content: space-between;
+}
+.member-container {
+  justify-content: flex-end;
+}
+.team-del {
+  /* z-index: 1; */
 }
 .hide{
   display: none;

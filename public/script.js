@@ -229,6 +229,24 @@ const writeTeamsToDOM = (teams) => {
       .addClass("team-member-container")
       .text(`Members: ${teams[i].members.length}`)
       .appendTo(newLi);
+    const menuContainer = $("<div>")
+      .addClass("team-menu-container")
+      .appendTo(newLi);
+    // Delete team Button
+    const delBtn = $("<i>")
+      .addClass("fa-solid fa-x team-del")
+      .appendTo(menuContainer)
+      .on("click", (event) => {
+        event.stopPropagation(); // Keeps the show page from opening too
+        const confirmDelete = confirm(
+          `Are you sure you want to delete ${teams[i].name}?`
+        );
+        if (confirmDelete) {
+          deleteTeam(teams[i].id);
+          displayTeams();
+        }
+      });
+
     $(".teams-index").append(newLi);
     // Single out team's onClick for "Show View"
     $(`#team-${i}`).on("click", () => {
@@ -239,6 +257,23 @@ const writeTeamsToDOM = (teams) => {
       $(".team-header").text(teamName).attr("index-id", teams[i].id);
     });
   }
+};
+
+const deleteTeam = (teamId) => {
+  // Open a transaction in "readwrite" mode
+  const transaction = db.transaction([DB_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_STORE_NAME);
+
+  // Delete the team using its ID
+  const deleteRequest = store.delete(teamId);
+
+  // deleteRequest.onsuccess = () => {
+  //   console.log("Team deleted successfully");
+  // };
+
+  deleteRequest.onerror = (event) => {
+    console.error("Error deleting team:", event.target.error);
+  };
 };
 
 // validate the team
@@ -447,7 +482,8 @@ $(() => {
   $("#member-location").on("input", validateMemberForm);
 
   // About Buttons
-  $("#about").click(showAbout);
+  // Has to grab the class cuz there are two links to about
+  $(".about").click(showAbout);
 
   // Team Buttons
   $("#add-team").click(showTeamModal);
