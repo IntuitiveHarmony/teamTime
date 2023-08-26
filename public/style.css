@@ -232,6 +232,9 @@ button {
 .disabled {
   background-color: grey;
 }
+#location-search-btn {
+  background-color: var(--green);
+}
 .warning {
   color: var(--secondary-light);
 }

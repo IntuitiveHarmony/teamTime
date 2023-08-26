@@ -44,6 +44,7 @@ request.onerror = (event) => {
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const callAPI = async () => {
+  validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
   // get info from form
@@ -398,6 +399,32 @@ const addMemberToTeam = (teamId, newMember) => {
   };
 };
 
+const validateMemberForm = () => {
+  const name = $("#member-name").val();
+  const location = $("#member-location").val();
+  // Clear warnings first
+  $("#member-name-warning").addClass("hide");
+  $("#member-location-warning").addClass("hide");
+
+  if (!name && !location) {
+    // If both fields are empty
+    $("#member-name-warning").removeClass("hide");
+    $("#member-location-warning").removeClass("hide");
+    return false;
+  } else if (!name) {
+    // If only the name field is empty
+    $("#member-name-warning").removeClass("hide");
+    return false;
+  } else if (!location) {
+    // If only the location field is empty
+    $("#member-location-warning").removeClass("hide");
+    return false;
+  } else {
+    // If both fields are filled
+    return true;
+  }
+};
+
 const submitMember = () => {
   // start with button greyed out
   $("#submit-member").addClass("disabled");
@@ -408,10 +435,7 @@ const submitMember = () => {
   const location = $("#member-location").val();
 
   // validate Name in form
-  if (!name && !location) {
-    $("#member-name-warning").removeClass("hide");
-    $("#member-location-warning").removeClass("hide");
-  } else {
+  if (validateMemberForm()) {
     const newMember = {
       name: name,
       location: $("#member-location").val(),
@@ -419,8 +443,9 @@ const submitMember = () => {
     };
 
     addMemberToTeam(teamId, newMember);
-
     cancelMember();
+  } else {
+    console.log("for pleae");
   }
 };
 
