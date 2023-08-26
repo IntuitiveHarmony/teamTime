@@ -8,7 +8,8 @@ const PORT = 3000;
 require("dotenv").config();
 
 // Serve static files, including the favicon
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
+// app.use(express.static(path.join(__dirname, "public")));
 // Serve the favicon only when requested
 app.get("/favicon.ico", (req, res) => {
   res.sendFile(path.join(__dirname, "favicon.ico"));
