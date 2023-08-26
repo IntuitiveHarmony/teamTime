@@ -45,10 +45,9 @@ request.onerror = (event) => {
 // https://ipgeolocation.io/documentation/timezone-api.html
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const callAPI = () => {
-  const key = process.env.API_KEY;
   const location = $("#member-location").val();
 
-  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${key}&location=${location}`;
+  const URL = `https://api.ipgeolocation.io/timezone?apiKey=${apiKey}&location=${location}`;
   console.log(URL);
 };
 
