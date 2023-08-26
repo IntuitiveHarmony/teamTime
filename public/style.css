@@ -67,8 +67,8 @@ body {
   background-color: var(--dark-accent);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-width: 100vw;
+  /* min-height: 100vh; */
+  /* min-width: 100vw; */
 }
 button {
   /* reset button style */
@@ -197,12 +197,13 @@ button {
 }
 .footer {
   position: fixed;
-  /* width: 100%; */
+  width: 100vw;
   display: flex;
   flex-direction: column;
   /* justify-content: flex-end; */
   align-items: center;
   padding: .7em;
+  padding-right: 2em;
   background-color: var(--secondary-dark);
   color: var(--light-accent);
 }
