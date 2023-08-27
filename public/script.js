@@ -376,7 +376,6 @@ const writeTeamsToDOM = (teams) => {
         );
         if (confirmDelete) {
           deleteTeam(teams[i].id);
-          displayTeams();
         }
       });
 
@@ -400,9 +399,11 @@ const deleteTeam = (teamId) => {
   // Delete the team using its ID
   const deleteRequest = store.delete(teamId);
 
-  // deleteRequest.onsuccess = () => {
-  //   console.log("Team deleted successfully");
-  // };
+  deleteRequest.onsuccess = () => {
+    // console.log("Team deleted successfully");
+
+    displayTeams();
+  };
 
   deleteRequest.onerror = (event) => {
     console.error("Error deleting team:", event.target.error);
