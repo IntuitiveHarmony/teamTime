@@ -5,7 +5,7 @@ if (!("indexedDB" in window)) {
   console.log("This browser doesn't support IndexedDB");
 }
 
-// Database Variables
+// Team Database Variables
 const DB_NAME = "teamsData";
 const DB_VERSION = 1;
 const DB_STORE_NAME = "teams";
@@ -40,6 +40,128 @@ request.onupgradeneeded = (event) => {
 request.onerror = (event) => {
   console.error("Database error:", event.target.error);
 };
+
+// User db stuff
+const DB_USER_NAME = "userData";
+const DB_USER_VERSION = 1;
+const DB_USER_STORE_NAME = "user";
+
+let userDB;
+
+const userRequest = indexedDB.open(DB_USER_NAME, DB_USER_VERSION);
+
+userRequest.onsuccess = (event) => {
+  userDB = event.target.result;
+
+  // Get users timezone data into db to use later for comparisons
+  updateUserDb();
+};
+
+userRequest.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  const userStore = db.createObjectStore(DB_USER_STORE_NAME, {
+    keyPath: "id",
+    autoIncrement: true,
+  });
+};
+
+userRequest.onerror = (event) => {
+  console.error("User database error:", event.target.error);
+};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UserDB Functions
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const addUserToDb = (userData) => {
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+
+  const addUserRequest = store.add(userData);
+
+  addUserRequest.onsuccess = () => {
+    console.log("User data added to database");
+  };
+
+  addUserRequest.onerror = (event) => {
+    console.error("Error adding user data to database:", event.target.error);
+  };
+};
+
+const updateExistingUserInDb = (userData) => {
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+
+  const addUserRequest = store.put(userData);
+
+  addUserRequest.onsuccess = () => {
+    console.log("User data updated in database");
+  };
+
+  addUserRequest.onerror = (event) => {
+    console.error("Error updating user data in database:", event.target.error);
+  };
+};
+
+// checks to see if there is user timezone in db, compare to local tz and adjust user db accordingly
+const updateUserDb = () => {
+  // connect to user db and request tz info
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readonly");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+  // get the user object
+  const getUserDataRequest = store.get("user");
+
+  // Get local tz info
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  getUserDataRequest.onsuccess = async (event) => {
+    const user = event.target.result;
+
+    if (!user) {
+      // User does not exist yet
+      console.log("no user timezone");
+      const newUser = {
+        id: "timezone",
+        timezone: "localTimezone",
+      };
+
+      // create a new user with local time zone info from api
+      addUserToDb(await getUpdatedTimezoneInfo(localTimezone));
+    } else {
+      // User exists now check if the local timezone is accurate
+      const storedTimezone = user.timezone;
+      // update the user db if the local time zone is different
+      if (storedTimezone !== localTimezone) {
+        // update user with local time zone info from api
+        updateExistingUserInDb(await getUpdatedTimezoneInfo(localTimezone));
+
+        // ~~~ Leaving this in to help debug in the future ~~~~~
+        // console.log("Db and local timezone are not the same");
+      }
+      // ~~~ These were pretty helpful when debugging ~~~~~~~~~~
+      // else {
+      //   console.log("Db and local timezone are the same");
+      // }
+      // console.log("Local time zone:", localTimezone);
+      // console.log("Db time zone:", storedTimezone);
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
+  };
+};
+
+const getUpdatedTimezoneInfo = async (localTimezone) => {
+  // call the Api
+  const response = await axios.post("/timeApiTz", { localTimezone });
+
+  return {
+    id: "user",
+    timezone: response.data.timezone,
+    timezone_offset: response.data.timezone_offset,
+    is_dst: response.data.is_dst,
+    dst_savings: response.data.dst_savings,
+    last_update: response.data.date_time_txt,
+  };
+};
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,13 +178,26 @@ const callAPI = async () => {
   try {
     // make the call
     const response = await axios.post("/timeApi", { location });
-    // Response variables
+    // This where the times get compared for the confirmation
     const dataUnixStamp = response.data.date_time_unix;
-    const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
-    const timeDiff = currentTimestamp - dataUnixStamp;
-    console.log(timeDiff);
-    const minutes = Math.floor((timeDiff / 60) % 60);
-    const hours = Math.floor((timeDiff / 3600) % 24);
+    const unixTimestampMillis = dataUnixStamp * 1000;
+
+    const dateObject = new Date(unixTimestampMillis);
+
+    const year = dateObject.getFullYear();
+    const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
+    const day = dateObject.getDate();
+    const hours = dateObject.getHours();
+    const minutes = dateObject.getMinutes();
+
+    console.log(`Date: ${year}-${month}-${day}`);
+    console.log(`Time: ${hours}:${minutes}`);
+
+    // const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
+    // const timeDiff = currentTimestamp - dataUnixStamp;
+    // console.log(timeDiff);
+    // const minutes = Math.floor((timeDiff / 60) % 60);
+    // const hours = Math.floor((timeDiff / 3600) % 24);
 
     let dstBool = false;
 
@@ -98,6 +233,8 @@ const callAPI = async () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const getTime = () => {
   const currentTime = new Date();
+  const unixTimestamp = Math.floor(currentTime.getTime() / 1000);
+  // console.log(unixTimestamp);
   const options = {
     hour: "numeric",
     minute: "numeric",
