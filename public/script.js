@@ -79,7 +79,7 @@ const addUserToDb = (userData) => {
   const addUserRequest = store.add(userData);
 
   addUserRequest.onsuccess = () => {
-    console.log("User data added to database");
+    // console.log("User data added to database");
   };
 
   addUserRequest.onerror = (event) => {
@@ -94,7 +94,7 @@ const updateExistingUserInDb = (userData) => {
   const addUserRequest = store.put(userData);
 
   addUserRequest.onsuccess = () => {
-    console.log("User data updated in database");
+    // console.log("User data updated in database");
   };
 
   addUserRequest.onerror = (event) => {
@@ -118,11 +118,7 @@ const updateUserDb = () => {
 
     if (!user) {
       // User does not exist yet
-      console.log("no user timezone");
-      const newUser = {
-        id: "timezone",
-        timezone: "localTimezone",
-      };
+      // console.log("no user timezone");
 
       // create a new user with local time zone info from api
       addUserToDb(await getUpdatedTimezoneInfo(localTimezone));
