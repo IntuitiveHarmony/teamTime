@@ -112,8 +112,8 @@ const getLocalData = () => {
   const store = transaction.objectStore(DB_USER_STORE_NAME);
   const getUserDataRequest = store.get("timezone");
 
-  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  console.log(localTimeZone);
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log(localTimezone);
 
   getUserDataRequest.onsuccess = (event) => {
     const user = event.target.result;
@@ -123,7 +123,7 @@ const getLocalData = () => {
       console.log("no user timezone");
       const newUser = {
         id: "timezone",
-        timezone: localTimeZone,
+        timezone: "localTimezone",
       };
 
       const addUserRequest = store.add(newUser);
@@ -139,7 +139,14 @@ const getLocalData = () => {
         );
       };
     } else {
-      console.log("User time zone", user.timezone);
+      const storedTimezone = user.timezone;
+      if (storedTimezone === localTimezone) {
+        console.log("Db and local timezone are the same");
+      } else {
+        console.log("Db and local timezone are not the same");
+      }
+      console.log("Local time zone:", localTimezone);
+      console.log("Db time zone:", storedTimezone);
     }
   };
 };
