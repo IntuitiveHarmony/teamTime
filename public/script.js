@@ -54,7 +54,7 @@ userRequest.onsuccess = (event) => {
   userDB = event.target.result;
 
   // Get users timezone data into db to use later for comparisons
-  getLocalData();
+  updateUserDb();
 };
 
 userRequest.onupgradeneeded = (event) => {
@@ -71,7 +71,7 @@ userRequest.onerror = (event) => {
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Time Zone API Functions
+// UserDB Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const addUserToDb = (userData) => {
   const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
@@ -88,30 +88,14 @@ const addUserToDb = (userData) => {
   };
 };
 
-// Function to check if user timezone data exists in the database
-const userTimeZoneDataExist = () => {
-  return new Promise((resolve, reject) => {
-    const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
-    const store = transaction.objectStore(DB_USER_STORE_NAME);
-    const getRequest = store.get(USER_TIMEZONE_KEY);
-
-    getRequest.onsuccess = (event) => {
-      const userData = event.target.result;
-      resolve(!!userData); // Resolve with a boolean indicating whether data exists
-    };
-
-    getRequest.onerror = (event) => {
-      reject("Error checking user timezone data:", event.target.error);
-    };
-  });
-};
-
 // checks to see if there is user timezone in db, compare to local tz and adjust user db accordingly
-const getLocalData = () => {
-  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+const updateUserDb = () => {
+  // connect to user db and request tz info
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readonly");
   const store = transaction.objectStore(DB_USER_STORE_NAME);
   const getUserDataRequest = store.get("timezone");
 
+  // Get local tz info
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   console.log(localTimezone);
 
@@ -126,24 +110,14 @@ const getLocalData = () => {
         timezone: "localTimezone",
       };
 
-      const addUserRequest = store.add(newUser);
-
-      addUserRequest.onsuccess = () => {
-        console.log("Local time zone added to user database");
-      };
-
-      addUserRequest.onerror = (event) => {
-        console.error(
-          "Error adding local time zone to user database:",
-          event.target.error
-        );
-      };
+      // create a new user
+      addUserToDb(newUser);
     } else {
       const storedTimezone = user.timezone;
-      if (storedTimezone === localTimezone) {
-        console.log("Db and local timezone are the same");
-      } else {
+      if (storedTimezone !== localTimezone) {
         console.log("Db and local timezone are not the same");
+      } else {
+        console.log("Db and local timezone are the same");
       }
       console.log("Local time zone:", localTimezone);
       console.log("Db time zone:", storedTimezone);
@@ -151,6 +125,9 @@ const getLocalData = () => {
   };
 };
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Time Zone API Functions
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const callAPI = async () => {
   validateMemberForm();
   // clear any existing searches
