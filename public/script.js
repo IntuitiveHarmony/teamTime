@@ -88,18 +88,34 @@ const addUserToDb = (userData) => {
   };
 };
 
+const updateExistingUserInDb = (userData) => {
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+
+  const addUserRequest = store.put(userData);
+
+  addUserRequest.onsuccess = () => {
+    console.log("User data updated in database");
+  };
+
+  addUserRequest.onerror = (event) => {
+    console.error("Error updating user data in database:", event.target.error);
+  };
+};
+
 // checks to see if there is user timezone in db, compare to local tz and adjust user db accordingly
 const updateUserDb = () => {
   // connect to user db and request tz info
   const transaction = userDB.transaction([DB_USER_STORE_NAME], "readonly");
   const store = transaction.objectStore(DB_USER_STORE_NAME);
-  const getUserDataRequest = store.get("timezone");
+  // get the user object
+  const getUserDataRequest = store.get("user");
 
   // Get local tz info
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   console.log(localTimezone);
 
-  getUserDataRequest.onsuccess = (event) => {
+  getUserDataRequest.onsuccess = async (event) => {
     const user = event.target.result;
 
     if (!user) {
@@ -110,11 +126,14 @@ const updateUserDb = () => {
         timezone: "localTimezone",
       };
 
-      // create a new user
-      addUserToDb(newUser);
+      // create a new user with local time zone info from api
+      addUserToDb(await getUpdatedTimezoneInfo(localTimezone));
     } else {
       const storedTimezone = user.timezone;
+      // update the user db if the local time zone is different
       if (storedTimezone !== localTimezone) {
+        // update user with local time zone info from api
+        updateExistingUserInDb(await getUpdatedTimezoneInfo(localTimezone));
         console.log("Db and local timezone are not the same");
       } else {
         console.log("Db and local timezone are the same");
@@ -122,6 +141,19 @@ const updateUserDb = () => {
       console.log("Local time zone:", localTimezone);
       console.log("Db time zone:", storedTimezone);
     }
+  };
+};
+
+const getUpdatedTimezoneInfo = async (localTimezone) => {
+  const response = await axios.post("/timeApiTz", { localTimezone });
+  console.log(response.data);
+  return {
+    id: "user",
+    timezone: response.data.timezone,
+    timezone_offset: response.data.timezone_offset,
+    is_dst: response.data.is_dst,
+    dst_savings: response.data.dst_savings,
+    last_update: response.data.date_time_txt,
   };
 };
 
