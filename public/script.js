@@ -52,6 +52,9 @@ const userRequest = indexedDB.open(DB_USER_NAME, DB_USER_VERSION);
 
 userRequest.onsuccess = (event) => {
   userDB = event.target.result;
+
+  // Get users timezone data into db to use later for comparisons
+  getLocalData();
 };
 
 userRequest.onupgradeneeded = (event) => {
@@ -103,22 +106,24 @@ const userTimeZoneDataExist = () => {
   });
 };
 
-const getLocalData = async () => {
-  try {
-    const hasUserData = await userTimeZoneDataExist();
+// checks to see if there is user timezone in db, compare to local tz and adjust user db accordingly
+const getLocalData = () => {
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+  const getUserDataRequest = store.get("timezone");
 
-    if (!hasUserData) {
-      // Get timezone info
-      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log(`User's time zone: ${timeZone}`);
-      // const response = await axios.post("/timeApiTz", { timeZone });
-      // console.log(response.data);
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log(localTimeZone);
+
+  getUserDataRequest.onsuccess = (event) => {
+    const user = event.target.result;
+
+    if (!user) {
+      console.log("no user timezone");
     } else {
-      console.log("User data exists");
+      console.log("User time zone", user.timezone);
     }
-  } catch (error) {
-    console.error(error);
-  }
+  };
 };
 
 const callAPI = async () => {
@@ -555,8 +560,6 @@ $(() => {
   updateLocalTime();
   // Update the time every second
   setInterval(updateLocalTime, 1000);
-  // Get users timezone data into db to use later for comparisons
-  // getLocalData();
 
   // Add a keydown event listener to the input fields within the form
   $("#member-location").keydown((event) => {
