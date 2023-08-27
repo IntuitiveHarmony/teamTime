@@ -119,7 +119,25 @@ const getLocalData = () => {
     const user = event.target.result;
 
     if (!user) {
+      // User does not exist yet
       console.log("no user timezone");
+      const newUser = {
+        id: "timezone",
+        timezone: localTimeZone,
+      };
+
+      const addUserRequest = store.add(newUser);
+
+      addUserRequest.onsuccess = () => {
+        console.log("Local time zone added to user database");
+      };
+
+      addUserRequest.onerror = (event) => {
+        console.error(
+          "Error adding local time zone to user database:",
+          event.target.error
+        );
+      };
     } else {
       console.log("User time zone", user.timezone);
     }
@@ -195,7 +213,7 @@ const callAPI = async () => {
 const getTime = () => {
   const currentTime = new Date();
   const unixTimestamp = Math.floor(currentTime.getTime() / 1000);
-  console.log(unixTimestamp);
+  // console.log(unixTimestamp);
   const options = {
     hour: "numeric",
     minute: "numeric",
