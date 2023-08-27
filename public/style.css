@@ -118,6 +118,10 @@ button {
   padding-bottom: .5em;
   padding-left: .7em;
 }
+.nav-logo {
+  max-width: 1.3em;
+  margin-right: .3em;
+}
 .content-container {
   padding: .5em;
   flex: 1;
@@ -149,6 +153,10 @@ button {
 .nav-menu {
   display: flex;
   gap: .7em;
+}
+.nav-title {
+  display: flex;
+  align-items: center;
 }
 .icon-box {
   cursor: pointer;

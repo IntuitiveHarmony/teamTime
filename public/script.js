@@ -5,7 +5,7 @@ if (!("indexedDB" in window)) {
   console.log("This browser doesn't support IndexedDB");
 }
 
-// Database Variables
+// Team Database Variables
 const DB_NAME = "teamsData";
 const DB_VERSION = 1;
 const DB_STORE_NAME = "teams";
@@ -40,9 +40,87 @@ request.onupgradeneeded = (event) => {
 request.onerror = (event) => {
   console.error("Database error:", event.target.error);
 };
+
+// User db stuff
+const DB_USER_NAME = "userData";
+const DB_USER_VERSION = 1;
+const DB_USER_STORE_NAME = "user";
+
+let userDB;
+
+const userRequest = indexedDB.open(DB_USER_NAME, DB_USER_VERSION);
+
+userRequest.onsuccess = (event) => {
+  userDB = event.target.result;
+};
+
+userRequest.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  const userStore = db.createObjectStore(DB_USER_STORE_NAME, {
+    keyPath: "id",
+    autoIncrement: true,
+  });
+  // You can create indexes here if needed
+};
+
+userRequest.onerror = (event) => {
+  console.error("User database error:", event.target.error);
+};
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const addUserToDb = (userData) => {
+  const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+  const store = transaction.objectStore(DB_USER_STORE_NAME);
+
+  const addUserRequest = store.add(userData);
+
+  addUserRequest.onsuccess = () => {
+    console.log("User data added to database");
+  };
+
+  addUserRequest.onerror = (event) => {
+    console.error("Error adding user data to database:", event.target.error);
+  };
+};
+
+// Function to check if user timezone data exists in the database
+const userTimeZoneDataExist = () => {
+  return new Promise((resolve, reject) => {
+    const transaction = userDB.transaction([DB_USER_STORE_NAME], "readwrite");
+    const store = transaction.objectStore(DB_USER_STORE_NAME);
+    const getRequest = store.get(USER_TIMEZONE_KEY);
+
+    getRequest.onsuccess = (event) => {
+      const userData = event.target.result;
+      resolve(!!userData); // Resolve with a boolean indicating whether data exists
+    };
+
+    getRequest.onerror = (event) => {
+      reject("Error checking user timezone data:", event.target.error);
+    };
+  });
+};
+
+const getLocalData = async () => {
+  try {
+    const hasUserData = await userTimeZoneDataExist();
+
+    if (!hasUserData) {
+      // Get timezone info
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log(`User's time zone: ${timeZone}`);
+      // const response = await axios.post("/timeApiTz", { timeZone });
+      // console.log(response.data);
+    } else {
+      console.log("User data exists");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const callAPI = async () => {
   validateMemberForm();
   // clear any existing searches
@@ -56,13 +134,26 @@ const callAPI = async () => {
   try {
     // make the call
     const response = await axios.post("/timeApi", { location });
-    // Response variables
+    // This where the times get compared for the confirmation
     const dataUnixStamp = response.data.date_time_unix;
-    const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
-    const timeDiff = currentTimestamp - dataUnixStamp;
-    console.log(timeDiff);
-    const minutes = Math.floor((timeDiff / 60) % 60);
-    const hours = Math.floor((timeDiff / 3600) % 24);
+    const unixTimestampMillis = dataUnixStamp * 1000;
+
+    const dateObject = new Date(unixTimestampMillis);
+
+    const year = dateObject.getFullYear();
+    const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
+    const day = dateObject.getDate();
+    const hours = dateObject.getHours();
+    const minutes = dateObject.getMinutes();
+
+    console.log(`Date: ${year}-${month}-${day}`);
+    console.log(`Time: ${hours}:${minutes}`);
+
+    // const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
+    // const timeDiff = currentTimestamp - dataUnixStamp;
+    // console.log(timeDiff);
+    // const minutes = Math.floor((timeDiff / 60) % 60);
+    // const hours = Math.floor((timeDiff / 3600) % 24);
 
     let dstBool = false;
 
@@ -98,6 +189,8 @@ const callAPI = async () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const getTime = () => {
   const currentTime = new Date();
+  const unixTimestamp = Math.floor(currentTime.getTime() / 1000);
+  console.log(unixTimestamp);
   const options = {
     hour: "numeric",
     minute: "numeric",
@@ -462,6 +555,8 @@ $(() => {
   updateLocalTime();
   // Update the time every second
   setInterval(updateLocalTime, 1000);
+  // Get users timezone data into db to use later for comparisons
+  // getLocalData();
 
   // Add a keydown event listener to the input fields within the form
   $("#member-location").keydown((event) => {
