@@ -63,7 +63,6 @@ userRequest.onupgradeneeded = (event) => {
     keyPath: "id",
     autoIncrement: true,
   });
-  // You can create indexes here if needed
 };
 
 userRequest.onerror = (event) => {
@@ -113,7 +112,6 @@ const updateUserDb = () => {
 
   // Get local tz info
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  console.log(localTimezone);
 
   getUserDataRequest.onsuccess = async (event) => {
     const user = event.target.result;
@@ -129,24 +127,31 @@ const updateUserDb = () => {
       // create a new user with local time zone info from api
       addUserToDb(await getUpdatedTimezoneInfo(localTimezone));
     } else {
+      // User exists now check if the local timezone is accurate
       const storedTimezone = user.timezone;
       // update the user db if the local time zone is different
       if (storedTimezone !== localTimezone) {
         // update user with local time zone info from api
         updateExistingUserInDb(await getUpdatedTimezoneInfo(localTimezone));
-        console.log("Db and local timezone are not the same");
-      } else {
-        console.log("Db and local timezone are the same");
+
+        // ~~~ Leaving this in to help debug in the future ~~~~~
+        // console.log("Db and local timezone are not the same");
       }
-      console.log("Local time zone:", localTimezone);
-      console.log("Db time zone:", storedTimezone);
+      // ~~~ These were pretty helpful when debugging ~~~~~~~~~~
+      // else {
+      //   console.log("Db and local timezone are the same");
+      // }
+      // console.log("Local time zone:", localTimezone);
+      // console.log("Db time zone:", storedTimezone);
+      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
   };
 };
 
 const getUpdatedTimezoneInfo = async (localTimezone) => {
+  // call the Api
   const response = await axios.post("/timeApiTz", { localTimezone });
-  console.log(response.data);
+
   return {
     id: "user",
     timezone: response.data.timezone,
