@@ -578,12 +578,16 @@ const updateFooterPosition = () => {
   const windowHeight = $(window).height();
   const footerHeight = $(".footer").outerHeight();
 
+  console.log(contentHeight, windowHeight, footerHeight);
+
   if (contentHeight + footerHeight < windowHeight) {
+    console.log("if");
     $(".footer").css({
       position: "fixed",
       bottom: 0,
     });
   } else {
+    console.log("else");
     $(".footer").css({
       position: "relative",
       bottom: "auto",

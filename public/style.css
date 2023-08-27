@@ -67,8 +67,8 @@ body {
   background-color: var(--dark-accent);
   display: flex;
   flex-direction: column;
-  /* min-height: 100vh; */
-  /* min-width: 100vw; */
+  min-height: 100vh;
+  min-width: 100vw;
 }
 button {
   /* reset button style */
@@ -205,7 +205,7 @@ button {
 }
 .footer {
   position: fixed;
-  width: 100vw;
+  width: 95vw;
   display: flex;
   flex-direction: column;
   /* justify-content: flex-end; */
