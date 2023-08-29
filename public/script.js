@@ -573,27 +573,27 @@ const writeMembersToDOM = (teamId) => {
 };
 
 // may not need to do this
-const updateFooterPosition = () => {
-  const contentHeight = $("body").height();
-  const windowHeight = $(window).height();
-  const footerHeight = $(".footer").outerHeight();
+// const updateFooterPosition = () => {
+//   const contentHeight = $("body").height();
+//   const windowHeight = $(window).height();
+//   const footerHeight = $(".footer").outerHeight();
 
-  console.log(contentHeight, windowHeight, footerHeight);
+//   console.log(contentHeight, windowHeight, footerHeight);
 
-  if (contentHeight + footerHeight < windowHeight) {
-    console.log("if");
-    $(".footer").css({
-      position: "fixed",
-      bottom: 0,
-    });
-  } else {
-    console.log("else");
-    $(".footer").css({
-      position: "relative",
-      bottom: "auto",
-    });
-  }
-};
+//   if (contentHeight + footerHeight < windowHeight) {
+//     console.log("if");
+//     $(".footer").css({
+//       position: "fixed",
+//       bottom: 0,
+//     });
+//   } else {
+//     console.log("else");
+//     $(".footer").css({
+//       position: "relative",
+//       bottom: "auto",
+//     });
+//   }
+// };
 
 $(() => {
   // Update the time immediately when the page loads
