@@ -218,11 +218,15 @@ const getTime = () => {
     // second: "numeric",
     timeZoneName: "short",
   };
-  return currentTime.toLocaleTimeString(undefined, options);
+  return {
+    time: currentTime.toLocaleTimeString(undefined, options),
+    unix: unixTimestamp,
+  };
 };
 
 const updateLocalTime = () => {
-  $(".local-time").text(getTime);
+  $(".local-time").text(getTime().time);
+  $(".local-time").attr("unix-time", `${getTime().unix}`);
 };
 
 // const getTeamTime = (gmtOffset) => {
