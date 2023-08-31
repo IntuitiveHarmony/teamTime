@@ -101,6 +101,24 @@ const updateExistingUserInDb = (userData) => {
     console.error("Error updating user data in database:", event.target.error);
   };
 };
+// get user data so we can compare it later
+const readUserDataFromDB = () => {
+  return new Promise((resolve, reject) => {
+    const transaction = userDB.transaction([DB_USER_STORE_NAME], "readonly");
+    const store = transaction.objectStore(DB_USER_STORE_NAME);
+    const getUserDataRequest = store.get("user");
+
+    getUserDataRequest.onsuccess = (event) => {
+      const user = event.target.result;
+      console.log(user);
+      resolve(user); // Resolve the promise with the user data
+    };
+
+    getUserDataRequest.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
+};
 
 // checks to see if there is user timezone in db, compare to local tz and adjust user db accordingly
 const updateUserDb = () => {
@@ -162,6 +180,7 @@ const getUpdatedTimezoneInfo = async (localTimezone) => {
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const searchApi = async () => {
+  const user = readUserDataFromDB();
   validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
@@ -177,7 +196,7 @@ const searchApi = async () => {
     // This where the times get compared for the confirmation
 
     let dstBool = false;
-
+    // check if the result uses dst
     if (response.data.dst_savings) {
       dstBool = true;
     }
@@ -186,14 +205,9 @@ const searchApi = async () => {
       .addClass("timezone-data")
       .text(`Did you mean: ${response.data.timezone}?\n`)
       .appendTo(".response-data");
-    const $cell2 = $(`<td colspan="2">`)
-      .addClass("timezone-data")
-      .text(
-        `Current Time: ${response.data.time_12} - Local offset ${hours}:${minutes} - Observe DST: ${dstBool} \n`
-      )
-      .appendTo(".response-data");
 
-    console.log(response.data);
+    console.log("Api Data:", response.data);
+    console.log("User Data:", user);
   } catch (error) {
     console.error("Error:", error);
   } finally {
@@ -580,7 +594,7 @@ const writeMembersToDOM = (teamId) => {
 $(() => {
   // Update the time immediately when the page loads
   updateLocalTime();
-  // Update the time every second
+  // Update the time every second, creates pulse for entire app
   setInterval(updateLocalTime, 1000);
 
   // Add a keydown event listener to the input fields within the form
