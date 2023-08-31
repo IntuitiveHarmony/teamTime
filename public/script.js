@@ -354,10 +354,19 @@ const writeTeamsToDOM = (teams) => {
     const newLi = $("<li>")
       .addClass("team-button secondary-card link")
       .attr("id", `team-${i}`);
+    // Name/ edit name
     const nameContainer = $("<div>")
       .addClass("team-name-container")
+      .attr("team-id", `${teams[i].id}`)
       .text(`${teamName}`)
       .appendTo(newLi);
+    const editContainer = $("<input>", {
+      type: "text",
+      name: "name",
+      class: "edit-member hide",
+      id: `edit-id-${teams[i].id}`,
+    }).appendTo(newLi);
+
     const memberContainer = $("<div>")
       .addClass("team-member-container")
       .text(`Members: ${teams[i].members.length}`)
@@ -365,6 +374,17 @@ const writeTeamsToDOM = (teams) => {
     const menuContainer = $("<div>")
       .addClass("team-menu-container")
       .appendTo(newLi);
+    // Edit Button
+    const editBtn = $("<i>")
+      .addClass("fa-regular fa-pen-to-square")
+      .appendTo(menuContainer)
+      .on("click", (event) => {
+        event.stopPropagation(); // Keeps the show page from opening too
+        console.log("edit");
+        $(".edit-member").addClass("hide");
+        $(`#edit-id-${teams[i].id}`).removeClass("hide");
+      });
+
     // Delete team Button
     const delBtn = $("<i>")
       .addClass("fa-solid fa-x team-del")
