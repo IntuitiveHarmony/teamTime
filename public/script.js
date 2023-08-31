@@ -161,7 +161,7 @@ const getUpdatedTimezoneInfo = async (localTimezone) => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const callAPI = async () => {
+const searchApi = async () => {
   validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
@@ -175,25 +175,6 @@ const callAPI = async () => {
     // make the call
     const response = await axios.post("/timeApi", { location });
     // This where the times get compared for the confirmation
-    const dataUnixStamp = response.data.date_time_unix;
-    const unixTimestampMillis = dataUnixStamp * 1000;
-
-    const dateObject = new Date(unixTimestampMillis);
-
-    const year = dateObject.getFullYear();
-    const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
-    const day = dateObject.getDate();
-    const hours = dateObject.getHours();
-    const minutes = dateObject.getMinutes();
-
-    console.log(`Date: ${year}-${month}-${day}`);
-    console.log(`Time: ${hours}:${minutes}`);
-
-    // const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
-    // const timeDiff = currentTimestamp - dataUnixStamp;
-    // console.log(timeDiff);
-    // const minutes = Math.floor((timeDiff / 60) % 60);
-    // const hours = Math.floor((timeDiff / 3600) % 24);
 
     let dstBool = false;
 
@@ -237,11 +218,15 @@ const getTime = () => {
     // second: "numeric",
     timeZoneName: "short",
   };
-  return currentTime.toLocaleTimeString(undefined, options);
+  return {
+    time: currentTime.toLocaleTimeString(undefined, options),
+    unix: unixTimestamp,
+  };
 };
 
 const updateLocalTime = () => {
-  $(".local-time").text(getTime);
+  $(".local-time").text(getTime().time);
+  $(".local-time").attr("unix-time", `${getTime().unix}`);
 };
 
 // const getTeamTime = (gmtOffset) => {
@@ -354,10 +339,19 @@ const writeTeamsToDOM = (teams) => {
     const newLi = $("<li>")
       .addClass("team-button secondary-card link")
       .attr("id", `team-${i}`);
+    // Name/ edit name
     const nameContainer = $("<div>")
       .addClass("team-name-container")
+      .attr("team-id", `${teams[i].id}`)
       .text(`${teamName}`)
       .appendTo(newLi);
+    const editContainer = $("<input>", {
+      type: "text",
+      name: "name",
+      class: "edit-member hide",
+      id: `edit-id-${teams[i].id}`,
+    }).appendTo(newLi);
+
     const memberContainer = $("<div>")
       .addClass("team-member-container")
       .text(`Members: ${teams[i].members.length}`)
@@ -365,6 +359,17 @@ const writeTeamsToDOM = (teams) => {
     const menuContainer = $("<div>")
       .addClass("team-menu-container")
       .appendTo(newLi);
+    // Edit Button
+    const editBtn = $("<i>")
+      .addClass("fa-regular fa-pen-to-square")
+      .appendTo(menuContainer)
+      .on("click", (event) => {
+        event.stopPropagation(); // Keeps the show page from opening too
+        console.log("edit");
+        $(".edit-member").addClass("hide");
+        $(`#edit-id-${teams[i].id}`).removeClass("hide");
+      });
+
     // Delete team Button
     const delBtn = $("<i>")
       .addClass("fa-solid fa-x team-del")
@@ -376,7 +381,6 @@ const writeTeamsToDOM = (teams) => {
         );
         if (confirmDelete) {
           deleteTeam(teams[i].id);
-          displayTeams();
         }
       });
 
@@ -400,9 +404,11 @@ const deleteTeam = (teamId) => {
   // Delete the team using its ID
   const deleteRequest = store.delete(teamId);
 
-  // deleteRequest.onsuccess = () => {
-  //   console.log("Team deleted successfully");
-  // };
+  deleteRequest.onsuccess = () => {
+    // console.log("Team deleted successfully");
+
+    displayTeams();
+  };
 
   deleteRequest.onerror = (event) => {
     console.error("Error deleting team:", event.target.error);
@@ -571,25 +577,6 @@ const writeMembersToDOM = (teamId) => {
   };
 };
 
-// may not need to do this
-const updateFooterPosition = () => {
-  const contentHeight = $("body").height();
-  const windowHeight = $(window).height();
-  const footerHeight = $(".footer").outerHeight();
-
-  if (contentHeight + footerHeight < windowHeight) {
-    $(".footer").css({
-      position: "fixed",
-      bottom: 0,
-    });
-  } else {
-    $(".footer").css({
-      position: "relative",
-      bottom: "auto",
-    });
-  }
-};
-
 $(() => {
   // Update the time immediately when the page loads
   updateLocalTime();
@@ -600,13 +587,13 @@ $(() => {
   $("#member-location").keydown((event) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission behavior
-      callAPI(); // Call the API function
+      searchApi(); // Call the API function
     }
   });
   // this is here so it doesn't bind to the element and render multiple searches
   $("#location-form").submit(async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-    await callAPI(); // Call the API function
+    await searchApi(); // Call the API function
   });
 
   // Validate the forms as they are updated by user
@@ -629,8 +616,4 @@ $(() => {
   $("#add-member").click(showMemberModal);
   $("#cancel-member").click(cancelMember);
   $("#submit-member").click(submitMember);
-
-  // Update footer position on page load and when the window is resized
-  updateFooterPosition();
-  $(window).on("resize", updateFooterPosition);
 });

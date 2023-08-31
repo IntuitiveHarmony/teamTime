@@ -67,8 +67,8 @@ body {
   background-color: var(--dark-accent);
   display: flex;
   flex-direction: column;
-  /* min-height: 100vh; */
-  /* min-width: 100vw; */
+  min-height: 100vh;
+  min-width: 100vw;
 }
 button {
   /* reset button style */
@@ -204,14 +204,14 @@ button {
   display: none;
 }
 .footer {
-  position: fixed;
-  width: 100vw;
+  position: relative;
+  bottom: auto;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   /* justify-content: flex-end; */
   align-items: center;
   padding: .7em;
-  padding-right: 2em;
   background-color: var(--secondary-dark);
   color: var(--light-accent);
 }
@@ -242,7 +242,7 @@ button {
 .line-break {
   background-color: var(--light-accent);
   height: .1em;
-  width: 90%;
+  width: 95%;
   margin-top: .5em;
   margin-bottom: .5em;
 }
