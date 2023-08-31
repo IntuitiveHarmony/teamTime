@@ -161,7 +161,7 @@ const getUpdatedTimezoneInfo = async (localTimezone) => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const callAPI = async () => {
+const searchApi = async () => {
   validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
@@ -175,25 +175,6 @@ const callAPI = async () => {
     // make the call
     const response = await axios.post("/timeApi", { location });
     // This where the times get compared for the confirmation
-    const dataUnixStamp = response.data.date_time_unix;
-    const unixTimestampMillis = dataUnixStamp * 1000;
-
-    const dateObject = new Date(unixTimestampMillis);
-
-    const year = dateObject.getFullYear();
-    const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
-    const day = dateObject.getDate();
-    const hours = dateObject.getHours();
-    const minutes = dateObject.getMinutes();
-
-    console.log(`Date: ${year}-${month}-${day}`);
-    console.log(`Time: ${hours}:${minutes}`);
-
-    // const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current Unix timestamp in seconds
-    // const timeDiff = currentTimestamp - dataUnixStamp;
-    // console.log(timeDiff);
-    // const minutes = Math.floor((timeDiff / 60) % 60);
-    // const hours = Math.floor((timeDiff / 3600) % 24);
 
     let dstBool = false;
 
@@ -602,13 +583,13 @@ $(() => {
   $("#member-location").keydown((event) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission behavior
-      callAPI(); // Call the API function
+      searchApi(); // Call the API function
     }
   });
   // this is here so it doesn't bind to the element and render multiple searches
   $("#location-form").submit(async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-    await callAPI(); // Call the API function
+    await searchApi(); // Call the API function
   });
 
   // Validate the forms as they are updated by user
