@@ -110,7 +110,6 @@ const readUserDataFromDB = () => {
 
     getUserDataRequest.onsuccess = (event) => {
       const user = event.target.result;
-      console.log(user);
       resolve(user); // Resolve the promise with the user data
     };
 
@@ -180,7 +179,6 @@ const getUpdatedTimezoneInfo = async (localTimezone) => {
 // Time Zone API Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const searchApi = async () => {
-  const user = readUserDataFromDB();
   validateMemberForm();
   // clear any existing searches
   $(".response-data").empty();
@@ -191,19 +189,40 @@ const searchApi = async () => {
   $("#location-search-btn").addClass("hide");
 
   try {
+    // Get user info to compare
+    const user = await readUserDataFromDB();
+    console.log("user?", user);
     // make the call
     const response = await axios.post("/timeApi", { location });
     // This where the times get compared for the confirmation
 
-    let dstBool = false;
-    // check if the result uses dst
-    if (response.data.dst_savings) {
-      dstBool = true;
+    let offsetDiff;
+    let userOffset;
+    let responseOffset;
+
+    // Figure out offset diff
+    // Accounts for whether or not the timezone observes DST
+    if (user.is_dst) {
+      userOffset = user.dst_savings + user.timezone_offset;
+    } else {
+      userOffset = user.timezone_offset;
     }
+    // Figure out response offset
+    if (response.data.is_dst) {
+      responseOffset =
+        response.data.dst_savings + response.data.timezone_offset;
+    } else {
+      responseOffset = response.data.timezone_offset;
+    }
+    offsetDiff = responseOffset - userOffset;
 
     const $cell1 = $(`<td colspan="2">`)
       .addClass("timezone-data")
-      .text(`Did you mean: ${response.data.timezone}?\n`)
+      .text(
+        `Did you mean: ${response.data.timezone}?\nWhich is ${
+          (offsetDiff < 0 ? "" : "+") + offsetDiff.toString()
+        } hours difference from your current location`
+      )
       .appendTo(".response-data");
 
     console.log("Api Data:", response.data);
